@@ -1,0 +1,75 @@
+* {
+    box-sizing: border-box;
+}
+
+.Home {
+    text-align: left;
+    padding-bottom: 100px;
+  }
+  
+  .Left {
+    float: left;
+    width: 65%;
+    padding-top: 150px;
+  }
+  
+  .Left h1 {
+    /* font-family: 'Vidaloka', serif; */
+    margin-top: 0;
+  }
+  
+  .Left p {
+    /* font-family: 'Montserrat', sans-serif; */
+    font-size: 20px;
+  }
+  
+  .Right {
+    float: left;
+    width: 35%;
+    padding-left: 50px;
+    /* font-family: 'Montserrat', sans-serif; */
+    padding-top: 100px;
+  }
+  
+  .Home::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+
+  .FormInput {
+      font-size: 20px;
+      padding: 5px;
+      margin-top: 15px;
+      border: 1px solid #c0c0c0;
+      width: 100%;
+  }
+
+  
+  .FirstName {
+      width: 40%;
+      display: inline-block;
+  }
+
+  .LastName {
+      width: 60%;
+      padding-left: 10px;
+      display: inline-block;
+  }
+
+  .SignupBtn {
+      width: 100%;
+      margin-top: 15px;
+      border-radius: 0;
+      background-color: #5680E9;
+      color: white;
+      font-size: 20px;
+      padding: 10px;
+      border: none;
+  }
+
+  .NewAccountTitle {
+      font-size: 35px;
+      margin-top: 0;
+      margin-bottom: 0;
+  }

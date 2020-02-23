@@ -1,0 +1,59 @@
+* {
+    box-sizing: border-box;
+}
+
+.LeftPanel {
+    width: 30%;
+    height: 100%;
+    float: left;
+    padding-right: 50px;
+}
+
+.RightPanel {
+    width: 70%;
+    float: left;
+    text-align: left;
+}
+
+.BigPrompt {
+    font-size: 30px;
+    text-align: left;;
+    font-family: 'Vidaloka', serif;
+}
+
+.FormInput {
+    width: 90%;
+    padding: 10px;
+    font-size: 15px;
+    float: left;
+    /* display: inline-block; */
+}
+
+.SearchBtn {
+    width: 10%;
+    float: left;
+    background-color: #5AB9EA;
+    padding: 15px;
+    border: none;
+    color: white;
+}
+
+.FavoritesBtn {
+    border-radius: 35px;
+    background-color: white;
+    font-size: 10px;
+    color: #ccc;
+    padding: 5px 10px;
+    margin-top: 10px;
+}
+
+.SortBox {
+    height: 100%;
+    background-color: white;
+}
+
+.AvailablePrompt {
+    font-size: 35px;
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 15px;
+}

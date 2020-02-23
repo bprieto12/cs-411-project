@@ -1,0 +1,28 @@
+.Container {
+    width: 90%;
+    margin: auto;
+}
+
+.Message {
+    font-size: 20px;
+}
+
+.Header {
+    font-size: 30px;
+}
+
+.FormInput {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.FinishBtn {
+    padding: 10px;
+    width: 100%;
+    font-size: 20px;
+    background-color: #C1C8E4;
+    text-align: center;
+}
