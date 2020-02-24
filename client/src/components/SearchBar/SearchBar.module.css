@@ -1,0 +1,16 @@
+.FormInput {
+    width: 90%;
+    padding: 10px;
+    font-size: 15px;
+    float: left;
+    /* display: inline-block; */
+}
+
+.SearchBtn {
+    width: 10%;
+    float: left;
+    background-color: #5AB9EA;
+    padding: 15px;
+    border: none;
+    color: white;
+}

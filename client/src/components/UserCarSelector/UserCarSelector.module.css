@@ -1,0 +1,44 @@
+.UserCarSelector {
+    padding: 10px;
+    background-color: white;
+}
+
+.UserCar {
+    text-align: left;
+    padding: 0px 0px 0px 10px;
+    margin-top: 5px;
+    display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox;      /* TWEENER - IE 10 */
+    display: -webkit-flex;     /* NEW - Chrome */
+    display: flex;
+}
+
+.UserCarUnselected {
+    border: 1px solid #c0c0c0;
+}
+
+.UserCarSelected {
+    border: 1px solid #1FCC03;
+}
+
+.CheckBoxUnselected {
+    background-color: #c0c0c0;
+}
+
+.CheckBoxSelected {
+    color: white;
+    background-color: #1FCC03;
+    align-self: center;
+}
+
+.Left {
+    width: 75%;
+}
+
+.Right {
+    width: 25%;
+    font-size: 30px;
+    text-align: center;
+    
+}
