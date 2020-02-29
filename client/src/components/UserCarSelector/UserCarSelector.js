@@ -30,14 +30,14 @@ const UserCar = props => {
     return (
         <div className={[styles.UserCar, boxStyle].join(' ')}>
             <div className={styles.Left}>
-                <p>
+                <p style={{fontSize: 20}}>
                     <b>
                         {props.vehicle.year + ' ' + 
-                    props.vehicle.make + ' ' +
-                    props.vehicle.model}
+                        props.vehicle.make + ' ' +
+                        props.vehicle.model}
                     </b>
                 </p>
-                <p>
+                <p style={{fontSize: 15}}>
                     LPN: {props.vehicle.lpn}
                 </p>
             </div>

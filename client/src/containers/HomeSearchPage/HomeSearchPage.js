@@ -45,6 +45,12 @@ class HomeSearchPage extends Component {
             this.setState({available_charging_stations: homes});
         }).catch(err => {
             console.log(err);
+        });
+
+        fetch("/api/ip").then(response => {
+            return response.json();
+        }).then(ip => {
+            console.log(ip);
         })
     }
 

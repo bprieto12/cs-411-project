@@ -3,7 +3,7 @@
 }
 
 .PageStyles {
-    /* padding-top: 10%; */
+    padding-top: 5%;
 }
 
 .LeftPanel {
@@ -25,6 +25,8 @@
     font-size: 30px;
     text-align: left;;
     font-family: 'Vidaloka', serif;
+    padding-top:0px;
+    margin-top: 0px;
 }
 
 .SortBox {

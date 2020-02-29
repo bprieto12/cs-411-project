@@ -1,5 +1,9 @@
+.Left > p {
+    margin: 0px;
+}
+
 .UserCarSelector {
-    padding: 10px;
+    padding: 5px;
     background-color: white;
 }
 
@@ -29,16 +33,18 @@
 .CheckBoxSelected {
     color: white;
     background-color: #1FCC03;
-    align-self: center;
+    /* padding-top: 25px; */
+    /* align-self: center; */
 }
 
 .Left {
     width: 75%;
+    padding: 10px;
 }
 
 .Right {
     width: 25%;
-    font-size: 30px;
+    font-size: 50px;
     text-align: center;
     
 }
