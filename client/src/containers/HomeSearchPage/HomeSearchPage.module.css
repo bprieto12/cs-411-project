@@ -2,6 +2,10 @@
     box-sizing: border-box;
 }
 
+.PageStyles {
+    /* padding-top: 10%; */
+}
+
 .LeftPanel {
     width: 30%;
     height: 100%;

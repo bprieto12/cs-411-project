@@ -29,6 +29,9 @@ class Home extends Component {
                 <div className={[styles.Left, globalStyles.SerifFont].join(' ')}>
                     <h1>Don't let range anxiety stop you from doing what you want!</h1>
                     <p>Come join the thousands of other EV drivers who have experienced the flexible and modern solution to EV charging</p> 
+                    <div className={styles.Card}>
+                        hello
+                    </div>
                 </div>
                 <div className={styles.Right}>
                     <p className={styles.NewAccountTitle}>Create New Account</p>
