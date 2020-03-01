@@ -18,6 +18,11 @@
     display: flex;
 }
 
+.UserCar:hover {
+    background-color: lightgreen;
+    /* box-shadow: 2px 2px 2px solid #888; */
+}
+
 .UserCarUnselected {
     border: 1px solid #c0c0c0;
 }

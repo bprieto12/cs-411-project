@@ -8,7 +8,10 @@ const UserCarSelector = props => {
     let displayed_vehicles = null;
     if (props.userVehicles) {
         displayed_vehicles = props.userVehicles.map(vehicle => {
-            return <UserCar key={vehicle.lpn} vehicle={vehicle} />
+            return <UserCar 
+                key={vehicle.lpn} 
+                vehicle={vehicle}
+                onClick={() => props.updateVehicleSelection(vehicle.lpn)} />
         });
     }
     return (
@@ -22,13 +25,15 @@ const UserCar = props => {
     let checkedBox = "";
     let checkBoxStyle = styles.CheckBoxUnselected;
     let boxStyle = styles.UserCarUnselected;
-    if (props.vehicle && props.vehicle.isDefault) {
+    if (props.vehicle && props.vehicle.isSelected) {
         checkedBox = <FontAwesomeIcon icon={faCheck} />;
         boxStyle = styles.UserCarSelected;
         checkBoxStyle = styles.CheckBoxSelected;
     }
     return (
-        <div className={[styles.UserCar, boxStyle].join(' ')}>
+        <button 
+            className={[styles.UserCar, boxStyle].join(' ')}
+            onClick={() => props.onClick()}>
             <div className={styles.Left}>
                 <p style={{fontSize: 20}}>
                     <b>
@@ -44,7 +49,7 @@ const UserCar = props => {
             <div className={[styles.Right, checkBoxStyle].join(' ')}>
                 {checkedBox}
             </div>
-        </div>
+        </button>
     );
 }
 

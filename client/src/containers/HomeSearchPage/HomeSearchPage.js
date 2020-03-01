@@ -16,7 +16,6 @@ class HomeSearchPage extends Component {
         onlyShowFavorites: false,
         sortBy: null,
         userVehicles: null,
-        userVehicleSelected: null,
         showModal: false
     }
 
@@ -28,9 +27,11 @@ class HomeSearchPage extends Component {
             console.log(response);
             return response.json();
         }).then(userCars => {
-            const selectedVehicle = userCars.filter(vehicle => vehicle.isDefault);
+            userCars.map(vehicle => {
+                vehicle.isSelected = vehicle.isDefault;
+            });
+            console.log(userCars);
             this.setState({
-                userVehicleSelected: selectedVehicle,
                 userVehicles: userCars
             });
         })
@@ -54,8 +55,14 @@ class HomeSearchPage extends Component {
         })
     }
 
-    onUserVehicleSelected = (vehicle) => {
-        this.setState({userVehicleSelected: vehicle});
+    onUserVehicleSelected = (selectedLPN) => {
+        const vehiclesCopy = [...this.state.userVehicles];
+        console.log(vehiclesCopy);
+        vehiclesCopy.map(vehicle => {
+            vehicle.isSelected = (vehicle.lpn == selectedLPN);
+        });
+        console.log(vehiclesCopy);
+        this.setState({userVehicles: vehiclesCopy});
     }
 
     handleFavoritesClick = () => {
