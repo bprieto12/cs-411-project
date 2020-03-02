@@ -16,6 +16,7 @@ const UserCarSelector = props => {
     }
     return (
         <div className={styles.UserCarSelector}>
+            <p style={{fontSize: 20, textAlign: 'left'}}><b>Current Car Used</b></p>
             {displayed_vehicles}
         </div>
     );
@@ -31,7 +32,7 @@ const UserCar = props => {
         checkBoxStyle = styles.CheckBoxSelected;
     }
     return (
-        <button 
+        <div 
             className={[styles.UserCar, boxStyle].join(' ')}
             onClick={() => props.onClick()}>
             <div className={styles.Left}>
@@ -49,7 +50,7 @@ const UserCar = props => {
             <div className={[styles.Right, checkBoxStyle].join(' ')}>
                 {checkedBox}
             </div>
-        </button>
+        </div>
     );
 }
 

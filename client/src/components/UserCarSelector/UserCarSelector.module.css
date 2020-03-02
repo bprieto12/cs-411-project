@@ -3,11 +3,17 @@
 }
 
 .UserCarSelector {
-    padding: 5px;
-    background-color: white;
+    /* padding: 15px; */
+    /* background-color: white; */
+}
+
+.UsedCarSelector > p {
+    margin: 0;
 }
 
 .UserCar {
+    background-color: white;
+    margin-right: 30px;
     text-align: left;
     padding: 0px 0px 0px 10px;
     margin-top: 5px;

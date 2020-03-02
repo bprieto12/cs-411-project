@@ -13,15 +13,11 @@ import HomeSearchPage from './HomeSearchPage/HomeSearchPage';
 class App extends Component {
 	state = {
 		show: false,
-		loggedIn: true,
-		userInfo: {
-			userId: 1234,
-			firstName: "User",
-			lastName: "Name"
-		}
+		loggedIn: false,
+		user_id: null
 	}
 
-	handleModalBtnClick() {
+	handleModalBtnClick = () => {
 		this.setState(prevState => {
 			return {
 				show: !prevState.show
@@ -29,13 +25,15 @@ class App extends Component {
 		})
 	}
 
-	handleLogIN(login) {
+	handleLogIN = (id) => {
+		console.log("logged in")
 		this.setState({
-			loggedIn: true
+			loggedIn: true,
+			user_id: id
 		})
 	}
 
-	handleLogOut() {
+	handleLogOut = () => {
 		this.setState({
 			loggedIn: false
 		})
@@ -52,12 +50,12 @@ class App extends Component {
 		return (
 		    <div className="App">
 			  	<Layout show={this.state.show} 
-						updateLoginStatus={this.handleLogIN} 
+						handleLogIN={this.handleLogIN} 
 						loggedIn={this.state.loggedIn}
-						userInfo={this.state.userInfo}>
+						user_id={this.state.user_id}>
 					<Switch>
-						<Route path="/chargestationsearch">
-							<HomeSearchPage />
+						<Route path={"/chargestationsearch/" + this.state.user_id}>
+							<HomeSearchPage user_id={this.state.user_id} />
 						</Route>
 						<Route path="/">
 							<Home />

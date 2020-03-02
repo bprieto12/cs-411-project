@@ -10,7 +10,7 @@ const LoggedInHeader = (props) => {
                     <div className={styles.NavItem}>Home</div>
                     <div className={styles.NavItem}>My Cars</div>
                     <div className={styles.NavItem}>My Homes</div>
-                    <div className={[styles.NavItem, styles.Icon].join(' ')}>{props.userFirstName[0] + props.userLastName[0]}</div>
+                    {/* <div className={[styles.NavItem, styles.Icon].join(' ')}>{props.userFirstName[0] + props.userLastName[0]}</div> */}
                 </div>
             </div>
         </div>

@@ -36,7 +36,8 @@
 
 .ChargeBtn {
     color: white;
-    background-color: #8860D0;
+    /* background-color: #8860D0; */
+    background-color: #c0c0c0;
     font-size: 20px;
     padding: 5px 15px;
 }

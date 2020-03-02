@@ -57,11 +57,9 @@ class HomeSearchPage extends Component {
 
     onUserVehicleSelected = (selectedLPN) => {
         const vehiclesCopy = [...this.state.userVehicles];
-        console.log(vehiclesCopy);
         vehiclesCopy.map(vehicle => {
             vehicle.isSelected = (vehicle.lpn == selectedLPN);
         });
-        console.log(vehiclesCopy);
         this.setState({userVehicles: vehiclesCopy});
     }
 
