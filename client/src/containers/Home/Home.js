@@ -18,7 +18,7 @@ class Home extends Component {
 
     handleRegistrationAttempt = () => {
         const path = '/api/register/newUser?email=' + this.state.email + "&pwd=" + this.state.password;
-        fetch(path).then(response => {
+        fetch(path, {method: 'POST'}).then(response => {
             return response.json();
         }).then(user => {
             this.showWelcomeModal(user.user_id);

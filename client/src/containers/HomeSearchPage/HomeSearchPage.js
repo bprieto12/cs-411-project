@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import styles from './HomeSearchPage.module.css';
 import AvailableChargingHomes from '../../components/AvailableChargingHomes/AvailableChargingHomes';
 import UserCarSelector from '../../components/UserCarSelector/UserCarSelector';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import ChargingStationFilters from '../../components/ChargingStationFilters/ChargingStationFilters';
 import ChargingModal from '../ChargingModal/ChargingModal';
-import Aux from '../../hoc/Aux';
+// import Aux from '../../hoc/Aux';
 
 // const host_url = "http://" + window.location.href.split('/')[2];
 
@@ -83,7 +83,7 @@ class HomeSearchPage extends Component {
     
     render() {
         return (
-            <Aux>
+            <Fragment>
                 <div className={styles.PageStyles}>
                     <div className={styles.LeftPanel}>
                         <UserCarSelector
@@ -108,7 +108,7 @@ class HomeSearchPage extends Component {
                 </div>
                 <ChargingModal  
                     checkout={this.handleCheckOut}/>
-            </Aux>
+            </Fragment>
         );
     }
 }
