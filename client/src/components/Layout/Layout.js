@@ -5,7 +5,7 @@ import HomePageHeader from '../Header/HomePageHeader';
 
 const Layout = (props) => {
 	const fin_style = props.show ? [styles.Layout, styles.blur].join(' ') : styles.Layout;
-	const header = props.loggedIn ? <LoggedInHeader userFirstName={props.userInfo.firstName} userLastName={props.userInfo.lastName} /> : <HomePageHeader />
+	const header = props.loggedIn ? <LoggedInHeader /> : <HomePageHeader handleLogIn={props.handleLogIN}/>
 	return (
 		<div className={fin_style}>
 			{header}

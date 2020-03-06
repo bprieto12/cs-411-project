@@ -2,12 +2,16 @@
     box-sizing: border-box;
 }
 
+.PageStyles {
+    padding-top: 5%;
+}
+
 .LeftPanel {
     width: 30%;
     height: 100%;
     float: left;
-    padding-right: 50px;
-    margin-top: 15px;
+    /* padding-right: 50px;
+    margin-top: 15px; */
 }
 
 .RightPanel {
@@ -21,11 +25,13 @@
     font-size: 30px;
     text-align: left;;
     font-family: 'Vidaloka', serif;
+    padding-top:0px;
+    margin-top: 0px;
 }
 
 .SortBox {
     height: 100%;
-    background-color: white;
+    /* background-color: white; */
 }
 
 .AvailablePrompt {

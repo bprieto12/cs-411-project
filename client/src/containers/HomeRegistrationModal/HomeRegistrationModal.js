@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Modal from '../../components/Modal/Modal';
 import styles from './HomeRegistrationModal.module.css';
 import globalStyles from '../../core/GlobalStyles.module.css';
-import { Router, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 class HomeRegistrationModal extends Component {
     render() {
@@ -12,7 +12,7 @@ class HomeRegistrationModal extends Component {
                 <div className={[styles.Container, globalStyles.SansSerifFont].join(' ')}>
                     <p className={styles.Header}>Last Step!</p>
                     <p>Would you like to earn money by joining the grid?</p>
-                    <Link to="/chargestationsearch">
+                    <Link to={"/chargestationsearch/" + this.props.user_id}>
                         <p>Skip</p>
                     </Link>
                     <div>
@@ -23,13 +23,7 @@ class HomeRegistrationModal extends Component {
                         <input className={styles.FormInput} style={{float: 'left', width: "31%", marginLeft: '20px'}} placeholder="zipcode" />
                         <input className={styles.FormInput} style={{float: 'left', width: "31%", marginLeft: '20px'}} placeholder="State" />
                     </div>
-                    {/* <div>
-                        Power Levels Supported
-                    </div>
-                    <div>
-                        Plug Type
-                    </div> */}
-                    <Link to="/chargestationsearch">
+                    <Link to={"/chargestationsearch/" + this.props.user_id}>
                         <button className={styles.FinishBtn}>
                             Finish
                         </button>

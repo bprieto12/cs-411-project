@@ -2,6 +2,16 @@
     box-sizing: border-box;
 }
 
+.Card {
+  height: 200px;
+  width: 300px;
+  border-radius: 3px;
+  background-color:#eee;
+  box-shadow: 0 3px 0px 0px #c0c0c0;
+  text-align: center;
+  font-size: 25px;
+}
+
 .Home {
     text-align: left;
     padding-bottom: 100px;

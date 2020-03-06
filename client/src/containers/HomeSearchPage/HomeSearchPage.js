@@ -4,7 +4,10 @@ import AvailableChargingHomes from '../../components/AvailableChargingHomes/Avai
 import UserCarSelector from '../../components/UserCarSelector/UserCarSelector';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import ChargingStationFilters from '../../components/ChargingStationFilters/ChargingStationFilters';
-//import axios from 'axios';
+import ChargingModal from '../ChargingModal/ChargingModal';
+import Aux from '../../hoc/Aux';
+
+// const host_url = "http://" + window.location.href.split('/')[2];
 
 class HomeSearchPage extends Component {
     state = {
@@ -13,81 +16,51 @@ class HomeSearchPage extends Component {
         onlyShowFavorites: false,
         sortBy: null,
         userVehicles: null,
-        userVehicleSelected: null
+        showModal: false
     }
 
     componentDidMount() {
         // get user vehicles
         // assign the userVehicleSelected to the default vehicle
         
-        //axios.get('')
-        const userVehicles = [
-            {
-                vehicleid: 1234,
-                lpn: '3VER720',
-                year: 2008,
-                make: 'Toyota',
-                model: 'Prius',
-                plugType: 'Type A',
-                isDefault: true
-            },
-            {
-                vehicleid: 2224,
-                lpn: '8WRS230',
-                year: 2018,
-                make: 'Tesla',
-                model: 'Model S',
-                plugType: 'Type B',
-                isDefault: false
-            },
-            {
-                vehicleid: 3333,
-                lpn: '5WER234',
-                year: 2010,
-                make: 'Chevrolet',
-                model: 'Bolt',
-                plugType: 'Type A',
-                isDefault: false
-            }
-        ];
+        fetch("/api/userCars").then(response => {
+            console.log(response);
+            return response.json();
+        }).then(userCars => {
+            userCars.map(vehicle => {
+                vehicle.isSelected = vehicle.isDefault;
+            });
+            console.log(userCars);
+            this.setState({
+                userVehicles: userCars
+            });
+        })
 
-        const selectedVehicle = userVehicles.filter(vehicle => vehicle.isDefault);
-        this.setState({
-            userVehicleSelected: selectedVehicle,
-            userVehicles: userVehicles
-        });
+        
     }
 
     onSearch = () => {
-        console.log("here")
-        const homes = [
-            {
-                address: "2291 N Glennwood St",
-                zipcode: 92865,
-                favorite: 0,
-                distance: 2.1,
-                rating_stars: 4
-            },
-            {
-                address: "23414 N Dians St",
-                zipcode: 92865,
-                favorite: 0,
-                distance: 3.1,
-                rating_stars: 4
-            },
-            {
-                address: "114 W Commonwealth St",
-                zipcode: 92849,
-                favorite: 0,
-                distance: 2.1,
-                rating_stars: 4
-            }
-        ]
-        this.setState({available_charging_stations: homes}); 
+        fetch("/api/homes").then(response => {
+            return response.json();
+        }).then(homes => {
+            this.setState({available_charging_stations: homes});
+        }).catch(err => {
+            console.log(err);
+        });
+
+        fetch("/api/ip").then(response => {
+            return response.json();
+        }).then(ip => {
+            console.log(ip);
+        })
     }
 
-    onUserVehicleSelected = (vehicle) => {
-        this.setState({userVehicleSelected: vehicle});
+    onUserVehicleSelected = (selectedLPN) => {
+        const vehiclesCopy = [...this.state.userVehicles];
+        vehiclesCopy.map(vehicle => {
+            vehicle.isSelected = (vehicle.lpn == selectedLPN);
+        });
+        this.setState({userVehicles: vehiclesCopy});
     }
 
     handleFavoritesClick = () => {
@@ -99,30 +72,43 @@ class HomeSearchPage extends Component {
     handleSortSelection = (type) => {
         this.setState({sortBy: type});
     }
+
+    handleCheckIn = () => {
+        this.setState({showModal: true});
+    }
+
+    handleCheckOut = () => {
+        this.setState({showModal: false});
+    }
     
     render() {
         return (
-            <div>
-                <div className={styles.LeftPanel}>
-                    <UserCarSelector
-                        userVehicles={this.state.userVehicles}
-                        updateVehicleSelection={this.onUserVehicleSelected} 
-                    />
+            <Aux>
+                <div className={styles.PageStyles}>
+                    <div className={styles.LeftPanel}>
+                        <UserCarSelector
+                            userVehicles={this.state.userVehicles}
+                            updateVehicleSelection={this.onUserVehicleSelected} 
+                        />
+                    </div>
+                    <div className={styles.RightPanel}>
+                        <p className={styles.BigPrompt}>Enter your location</p>
+                        <SearchBar onsearch={this.onSearch} />
+                        <ChargingStationFilters 
+                            onUseFavorites={this.handleFavoritesClick} 
+                            onUpdateSort={this.handleSortSelection}
+                        />
+                        <AvailableChargingHomes
+                            checkin={this.handleCheckIn}
+                            available_homes={this.state.available_charging_stations}
+                            onlyShowFavorites={this.state.onlyShowFavorites}
+                            sortBy={this.state.sortBy} 
+                        />
+                    </div>
                 </div>
-                <div className={styles.RightPanel}>
-                    <p className={styles.BigPrompt}>Enter your location</p>
-                    <SearchBar onsearch={this.onSearch} />
-                    <ChargingStationFilters 
-                        onUseFavorites={this.handleFavoritesClick} 
-                        onUpdateSort={this.handleSortSelection}
-                    />
-                    <AvailableChargingHomes 
-                        available_homes={this.state.available_charging_stations}
-                        onlyShowFavorites={this.state.onlyShowFavorites}
-                        sortBy={this.state.sortBy} 
-                    />
-                </div>
-            </div>
+                <ChargingModal  
+                    checkout={this.handleCheckOut}/>
+            </Aux>
         );
     }
 }

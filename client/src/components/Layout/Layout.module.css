@@ -1,5 +1,5 @@
 .Layout {
-	background-color: #84CEEB;	
+	/* background-color: #84CEEB;	 */
 }
 
 .Content {
@@ -10,5 +10,6 @@
 }
 
 body {
-  background-color: #84CEEB;
+  /* background-color: #84CEEB; */
+  background-color: #f0f0f0;
 }
