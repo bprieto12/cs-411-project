@@ -60,7 +60,6 @@ class App extends Component {
 						<Route path="/">
 							<Home />
 						</Route>
-						
 					</Switch>
 		      	</Layout>
 		    </div>
