@@ -3,6 +3,20 @@ import Modal from '../../components/Modal/Modal';
 import styles from './WelcomeModal.module.css';
 
 class WelcomeModal extends Component {
+    state = {
+        model_year: null,
+        make: "",
+        model: "",
+        lpn: "",
+        plugType: ""
+    }
+
+    onRegisterVehicle = () => {
+        // const path = '/api/register/vehicle/' + this.props.user_id + '?' + 
+        // fetch(path)
+        
+    }
+
     render() {
         let model_years = [<option>Model Year</option>]
         const current_year = new Date().getFullYear();
@@ -31,7 +45,7 @@ class WelcomeModal extends Component {
                     </select>
                     <button style={{backgroundColor: "#C1C8E4", textAlign: "center"}} 
                             className={styles.FormInput}
-                            onClick={() => this.props.onComplete()} >
+                            onClick={() => this.onRegisterVehicle()} >
                         Next
                     </button>
                 </div>

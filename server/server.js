@@ -1,7 +1,20 @@
 const express = require('express');
 const axios = require('axios');
 const app = express()
-const port = 5000
+const port = 6000;
+const mysql = require('mysql');
+
+
+
+// con.connect((err) => {
+//     if(err){
+//         console.log(err)
+//         console.log('Error connecting to Db');
+//         return;
+//     }
+
+//     console.log('Connection established');
+// });
 
 let users = [
     {
@@ -21,7 +34,41 @@ let users = [
     }
 ];
 
-app.get('/', (req, res) => res.sendFile(__dirname +  '/.index.html'));
+app.get('/', (req, res) => {
+    res.sendFile(__dirname +  '/.index.html');
+});
+
+app.get('/db', (req, res) => {
+    const con = mysql.createConnection({
+        host: 'localhost',
+        port: 3306,
+        user: 'outletprototype_Dev1',
+        password: 'A~Z767p+wMKe',
+        database: 'outletprototype_website'
+    });
+
+    con.connect((err) => {
+        if(err){
+            console.log(err)
+            console.log('Error connecting to Db');
+            return;
+        }
+    
+        console.log('Connection established');
+    });
+
+    con.query('SELECT * FROM users limit 20', (err,rows) => {
+        if(err) {
+            console.log(err)
+            return
+        };
+      
+        console.log('Data received from Db:');
+        res.send(rows);
+    });
+
+    con.end();
+});
 
 app.get('/api/test', (req, res) => res.json({hello: true}));
 
