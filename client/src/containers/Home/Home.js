@@ -16,15 +16,15 @@ class Home extends Component {
         user_id: null
     }
 
-    handleRegistrationAttempt = () => {
+    handleRegistrationAttempt = async () => {
         const path = '/api/register/newUser?email=' + this.state.email + "&pwd=" + this.state.password;
-        fetch(path, {method: 'POST'}).then(response => {
-            return response.json();
-        }).then(user => {
+        let response = await fetch(path, {method: 'POST'});
+        if (response.ok) {
+            let user = await response.json(); 
             this.showWelcomeModal(user.user_id);
-        }).catch(err => {
+        } else {
             this.setState({error: true});
-        })
+        }
     }
 
     showWelcomeModal = (user_id) => {

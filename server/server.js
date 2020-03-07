@@ -4,8 +4,6 @@ const app = express()
 const port = 6000;
 const mysql = require('mysql');
 
-
-
 // con.connect((err) => {
 //     if(err){
 //         console.log(err)
@@ -42,8 +40,8 @@ app.get('/db', (req, res) => {
     const con = mysql.createConnection({
         host: 'localhost',
         port: 3306,
-        user: 'outletprototype_Dev1',
-        password: 'A~Z767p+wMKe',
+        user: process.env.DB_USER_NAME,
+        password: process.env.DB_USER_PWD,
         database: 'outletprototype_website'
     });
 
@@ -76,9 +74,6 @@ app.get('/api/userLogin/', (req, res) => {
     const usn = req.query.email;
     const pwd = req.query.pwd;
 
-    console.log(usn);
-    console.log(pwd);
-
     let user_id = null;
     users.forEach(user => {
         if (user.email === usn && user.password === pwd) {
@@ -89,7 +84,7 @@ app.get('/api/userLogin/', (req, res) => {
     if (user_id) {
         res.json({"user_id": user_id});
     } else {
-        res.status(404).json({"message": "User Not Found"});
+        res.status(400).json({"message": "User Not Found"});
     }
 });
 
@@ -155,16 +150,94 @@ app.get('/api/ip', (req, res) => {
     res.json({"ip": req.ip});
 });
 
+app.get('/api/vehicle/years', (req, res) => {
+    
+})
+
+app.get('/api/vehicle/makes', (req, res) => { 
+    // require year
+    if (req.query.year) {
+        const con = mysql.createConnection({
+            host: 'localhost',
+            port: 3306,
+            user: process.env.DB_USER_NAME,
+            password: process.env.DB_USER_PWD,
+            database: 'outletprototype_website'
+        });
+    
+        con.connect((err) => {
+            if(err){
+                console.log(err)
+                console.log('Error connecting to Db');
+                return;
+            }
+        
+            console.log('Connection established');
+        });
+
+        const query = 'SELECT distinct make_name FROM Vehicle where model_year=' + req.query.model_year;
+    
+        con.query(query, (err,rows) => {
+            if(err) {
+                console.log(err)
+                return
+            };
+          
+            res.send(rows);
+        });
+    } else {
+        res.status(400).json({'message': 'A year must be provided in the parameters'});
+    }
+})
+
+app.get('/api/vehicle/models', (req, res) => {
+    // require year and make
+    if (req.query.model_year && req.query.make_name) {
+        const con = mysql.createConnection({
+            host: 'localhost',
+            port: 3306,
+            user: process.env.DB_USER_NAME,
+            password: process.env.DB_USER_PWD,
+            database: 'outletprototype_website'
+        });
+    
+        con.connect((err) => {
+            if(err){
+                console.log(err)
+                console.log('Error connecting to Db');
+                return;
+            }
+        
+            console.log('Connection established');
+        });
+
+        const query = 'SELECT distinct model_name FROM Vehicle where model_year=' + req.query.model_year + " and make_name=" + req.query.make_name;
+    
+        con.query(query, (err,rows) => {
+            if(err) {
+                console.log(err)
+                return
+            };
+          
+            res.send(rows);
+        });
+    } else {
+        res.status(400).json({'message': 'A model year and make name must be provided in the parameters'});
+    }
+})
+
 app.post('/api/register/newUser', (req, res) => {
     let user_exists = false;
     let max_user_id = 0;
-
+    console.log(req.query.email);
     users.forEach(user => {
         max_user_id = user.user_id;
+        console.log(user.email);
         if (req.query.email === user.email) {
             user_exists = true;
         }
     });
+    console.log(user_exists);
     if (user_exists) {
         res.status(404).json({"message": "User already exists"});
     } else {
