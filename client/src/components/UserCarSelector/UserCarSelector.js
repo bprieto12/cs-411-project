@@ -8,10 +8,11 @@ const UserCarSelector = props => {
     let displayed_vehicles = null;
     if (props.userVehicles) {
         displayed_vehicles = props.userVehicles.map(vehicle => {
+            console.log(vehicle);
             return <UserCar 
-                key={vehicle.lpn} 
+                key={vehicle.Lpn} 
                 vehicle={vehicle}
-                onClick={() => props.updateVehicleSelection(vehicle.lpn)} />
+                onClick={() => props.updateVehicleSelection(vehicle.Lpn)} />
         });
     }
     return (
@@ -38,13 +39,13 @@ const UserCar = props => {
             <div className={styles.Left}>
                 <p style={{fontSize: 20}}>
                     <b>
-                        {props.vehicle.year + ' ' + 
-                        props.vehicle.make + ' ' +
-                        props.vehicle.model}
+                        {props.vehicle.model_year + ' ' + 
+                        props.vehicle.make_name + ' ' +
+                        props.vehicle.model_name}
                     </b>
                 </p>
                 <p style={{fontSize: 15}}>
-                    LPN: {props.vehicle.lpn}
+                    LPN: {props.vehicle.Lpn}
                 </p>
             </div>
             <div className={[styles.Right, checkBoxStyle].join(' ')}>

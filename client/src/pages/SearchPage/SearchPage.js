@@ -1,15 +1,16 @@
 import React, { Component, Fragment } from 'react';
-import styles from './HomeSearchPage.module.css';
+import styles from './SearchPage.module.css';
 import AvailableChargingHomes from '../../components/AvailableChargingHomes/AvailableChargingHomes';
 import UserCarSelector from '../../components/UserCarSelector/UserCarSelector';
 import SearchBar from '../../components/SearchBar/SearchBar';
+import Layout from '../../components/Layout/Layout';
+import LoggedInHeader from '../../components/Header/LoggedInHeader';
 import ChargingStationFilters from '../../components/ChargingStationFilters/ChargingStationFilters';
-import ChargingModal from '../ChargingModal/ChargingModal';
-// import Aux from '../../hoc/Aux';
+import ChargingModal from '../../containers/ChargingModal/ChargingModal';
 
 // const host_url = "http://" + window.location.href.split('/')[2];
 
-class HomeSearchPage extends Component {
+class SearchPage extends Component {
     state = {
         available_charging_stations: null,
         user_location: "",
@@ -28,7 +29,7 @@ class HomeSearchPage extends Component {
             return response.json();
         }).then(userCars => {
             userCars.map(vehicle => {
-                vehicle.isSelected = vehicle.isDefault;
+                vehicle.isSelected = vehicle.isDefault | false;
             });
             console.log(userCars);
             this.setState({
@@ -58,7 +59,7 @@ class HomeSearchPage extends Component {
     onUserVehicleSelected = (selectedLPN) => {
         const vehiclesCopy = [...this.state.userVehicles];
         vehiclesCopy.map(vehicle => {
-            vehicle.isSelected = (vehicle.lpn == selectedLPN);
+            vehicle.isSelected = (vehicle.Lpn == selectedLPN);
         });
         this.setState({userVehicles: vehiclesCopy});
     }
@@ -84,33 +85,35 @@ class HomeSearchPage extends Component {
     render() {
         return (
             <Fragment>
-                <div className={styles.PageStyles}>
-                    <div className={styles.LeftPanel}>
-                        <UserCarSelector
-                            userVehicles={this.state.userVehicles}
-                            updateVehicleSelection={this.onUserVehicleSelected} 
-                        />
+                <LoggedInHeader />
+                <Layout>
+                    <div className={styles.PageStyles}>
+                        <div className={styles.LeftPanel}>
+                            <UserCarSelector
+                                userVehicles={this.state.userVehicles}
+                                updateVehicleSelection={this.onUserVehicleSelected} 
+                            />
+                        </div>
+                        <div className={styles.RightPanel}>
+                            <p className={styles.BigPrompt}>Enter your location</p>
+                            <SearchBar onsearch={this.onSearch} />
+                            <ChargingStationFilters 
+                                onUseFavorites={this.handleFavoritesClick} 
+                                onUpdateSort={this.handleSortSelection}
+                            />
+                            <AvailableChargingHomes
+                                checkin={this.handleCheckIn}
+                                available_homes={this.state.available_charging_stations}
+                                onlyShowFavorites={this.state.onlyShowFavorites}
+                                sortBy={this.state.sortBy} 
+                            />
+                        </div>
                     </div>
-                    <div className={styles.RightPanel}>
-                        <p className={styles.BigPrompt}>Enter your location</p>
-                        <SearchBar onsearch={this.onSearch} />
-                        <ChargingStationFilters 
-                            onUseFavorites={this.handleFavoritesClick} 
-                            onUpdateSort={this.handleSortSelection}
-                        />
-                        <AvailableChargingHomes
-                            checkin={this.handleCheckIn}
-                            available_homes={this.state.available_charging_stations}
-                            onlyShowFavorites={this.state.onlyShowFavorites}
-                            sortBy={this.state.sortBy} 
-                        />
-                    </div>
-                </div>
-                <ChargingModal  
-                    checkout={this.handleCheckOut}/>
+                    <ChargingModal checkout={this.handleCheckOut}/>
+                </Layout>
             </Fragment>
         );
     }
 }
 
-export default HomeSearchPage;
+export default SearchPage;

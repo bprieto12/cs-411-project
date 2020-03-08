@@ -26,7 +26,7 @@ class HomePageHeader extends Component {
 
         return (
             <div className={styles.Header}>
-                <div className={styles.Left}>OUTLET</div>
+                <div className={styles.Left}>outlet</div>
                 <div className={styles.Right}>
                     <div className={styles.Nav}>
                         <div className={styles.NavItem}>
