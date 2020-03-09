@@ -18,10 +18,8 @@ const isValidName = name => {
     return name != null && name != '';
 }
 
-class HomePage extends Component {
+class SignUpForm extends Component {
     state = {
-        show_welcome: false,
-        show_home_registration: false,
         email: "",
         password: "",
         first_name: "",
@@ -31,7 +29,6 @@ class HomePage extends Component {
         last_name_error: false,
         email_error: false,
         pwd_error: false,
-        user_id: null
     }
 
     handleRegistrationAttempt = async () => {
@@ -70,13 +67,76 @@ class HomePage extends Component {
             let response = await fetch(path, {method: 'POST'});
             if (response.ok) {
                 let user = await response.json(); 
-                this.showWelcomeModal(user.user_id);
+                this.props.showWelcomeModal(user.user_id);
             } else {
                 this.setState({error: true});
             }
         } else {
             this.setState({error: true});
         }
+    }
+
+    render() {
+        let errStyle = this.state.error ? {border: '1px solid red'} : {};
+        let fnErrStyle = this.state.first_name_error ? {color: 'red'} : {display: 'none'};
+        let lnErrStyle = this.state.last_name_error ? {color: 'red'} : {display: 'none'};
+        let emailErrStyle = this.state.email_error ? {color: 'red'} : {display: 'none'};
+        let pwdErrStyle = this.state.pwd_error ? {color: 'red'} : {display: 'none'};
+
+        return (
+            <Fragment>
+                <p className={styles.NewAccountTitle}>Create New Account</p>
+                <div className={styles.Names}>
+                    <div className={styles.FirstName}>
+                        <p style={fnErrStyle}>Invalid first name</p>
+                        <input 
+                            className={styles.FormInput} 
+                            style={this.state.first_name_error ? errStyle : {}}
+                            placeholder="First name"
+                            value={this.state.first_name}
+                            onChange={e => this.setState({first_name: e.target.value})} />
+                    </div>
+                    <div className={styles.LastName}>
+                        <p style={lnErrStyle}>Invalid last name</p>
+                        <input 
+                            className={styles.FormInput} 
+                            style={this.state.last_name_error ? errStyle : {}}
+                            placeholder="Last name"
+                            value={this.state.last_night}
+                            onChange={e => this.setState({last_name: e.target.value})} />
+                    </div>
+                </div>
+                <div>
+                    <p style={emailErrStyle}>Invalid email</p>
+                    <input 
+                        className={[styles.FormInput, styles.FullWidth].join(' ')} 
+                        style={this.state.email_error ? errStyle : {}}
+                        placeholder="Email"
+                        value={this.state.email}
+                        onChange={e => this.setState({email: e.target.value})} />
+                </div>
+                <div>
+                    <p style={pwdErrStyle}>Invalid password</p>
+                    <input 
+                        className={[styles.FormInput, styles.FullWidth].join(' ')} 
+                        style={this.state.pwd_error ? errStyle : {}}
+                        placeholder="Password"
+                        value={this.state.password}
+                        onChange={e => this.setState({password: e.target.value})} />
+                </div>
+                <div>
+                    <button className={styles.SignupBtn} onClick={() => this.handleRegistrationAttempt()}>SIGN UP</button>
+                </div>
+            </Fragment>
+        );
+    }
+}
+
+class HomePage extends Component {
+    state = {
+        show_welcome: false,
+        show_home_registration: false,
+        user_id: null
     }
 
     showWelcomeModal = (user_id) => {
@@ -100,12 +160,6 @@ class HomePage extends Component {
     }
 
     render() {
-        let errStyle = this.state.error ? {border: '1px solid red'} : {};
-        let fnErrStyle = this.state.first_name_error ? {color: 'red'} : {display: 'none'};
-        let lnErrStyle = this.state.last_name_error ? {color: 'red'} : {display: 'none'};
-        let emailErrStyle = this.state.email_error ? {color: 'red'} : {display: 'none'};
-        let pwdErrStyle = this.state.pwd_error ? {color: 'red'} : {display: 'none'};
-
         return (
             <Fragment>
                 <HomePageHeader />
@@ -116,48 +170,7 @@ class HomePage extends Component {
                             <p>Come join the thousands of other EV drivers who have experienced the flexible and modern solution to EV charging</p> 
                         </div>
                         <div className={styles.Right}>
-                            <p className={styles.NewAccountTitle}>Create New Account</p>
-                            <div className={styles.Names}>
-                                <div className={styles.FirstName}>
-                                    <p style={fnErrStyle}>Invalid first name</p>
-                                    <input 
-                                        className={styles.FormInput} 
-                                        style={this.state.first_name_error ? errStyle : {}}
-                                        placeholder="First name"
-                                        value={this.state.first_name}
-                                        onChange={e => this.setState({first_name: e.target.value})} />
-                                </div>
-                                <div className={styles.LastName}>
-                                    <p style={lnErrStyle}>Invalid last name</p>
-                                    <input 
-                                        className={styles.FormInput} 
-                                        style={this.state.last_name_error ? errStyle : {}}
-                                        placeholder="Last name"
-                                        value={this.state.last_night}
-                                        onChange={e => this.setState({last_name: e.target.value})} />
-                                </div>
-                            </div>
-                            <div>
-                                <p style={emailErrStyle}>Invalid email</p>
-                                <input 
-                                    className={[styles.FormInput, styles.FullWidth].join(' ')} 
-                                    style={this.state.email_error ? errStyle : {}}
-                                    placeholder="Email"
-                                    value={this.state.email}
-                                    onChange={e => this.setState({email: e.target.value})} />
-                            </div>
-                            <div>
-                                <p style={pwdErrStyle}>Invalid password</p>
-                                <input 
-                                    className={[styles.FormInput, styles.FullWidth].join(' ')} 
-                                    style={this.state.pwd_error ? errStyle : {}}
-                                    placeholder="Password"
-                                    value={this.state.password}
-                                    onChange={e => this.setState({password: e.target.value})} />
-                            </div>
-                            <div>
-                                <button className={styles.SignupBtn} onClick={() => this.handleRegistrationAttempt()}>SIGN UP</button>
-                            </div>
+                            <SignUpForm showWelcomeModal={this.showWelcomeModal} />
                         </div>
                         <WelcomeModal onClose={this.hideWelcomeModal} 
                                     nextPanel={this.showHomeRegistrationModal}
