@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import Home from './Home/Home';
+import HomePage from '../pages/HomePage/HomePage';
 import Layout from '../components/Layout/Layout';
 import {
 	BrowserRouter as Router,
@@ -8,7 +8,7 @@ import {
 	Route,
 	Link
 } from 'react-router-dom';
-import HomeSearchPage from './HomeSearchPage/HomeSearchPage';
+import SearchPage from '../pages/SearchPage/SearchPage';
 
 class App extends Component {
 	state = {
@@ -49,19 +49,14 @@ class App extends Component {
 
 		return (
 		    <div className="App">
-			  	<Layout show={this.state.show} 
-						handleLogIN={this.handleLogIN} 
-						loggedIn={this.state.loggedIn}
-						user_id={this.state.user_id}>
-					<Switch>
-						<Route path={"/chargestationsearch/" + this.state.user_id}>
-							<HomeSearchPage user_id={this.state.user_id} />
-						</Route>
-						<Route path="/">
-							<Home />
-						</Route>
-					</Switch>
-		      	</Layout>
+				<Switch>
+					<Route path="/chargestationsearch">
+						<SearchPage user_id={this.state.user_id} />
+					</Route>
+					<Route path="/">
+						<HomePage />
+					</Route>
+				</Switch>
 		    </div>
 		  );
 	}

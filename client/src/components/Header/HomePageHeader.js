@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import styles from './Header.module.css';
 
 class HomePageHeader extends Component {
     state = {
         email: "",
         password: "",
+        logInSuccessful: false,
         error: false
     }
 
@@ -15,18 +17,22 @@ class HomePageHeader extends Component {
             return response.json();
         }).then(user_id => {
             console.log(user_id)
-            this.props.handleLogIn(user_id);
+            this.setState({logInSuccessful: true});
         }).catch(err => {
             this.setState({error: true});
         });
     }
     
     render() {
+        if (this.state.logInSuccessful) {
+            return <Redirect push to="/chargestationsearch" />
+        }
+
         const errStyle = this.state.error ? {border: '1px solid red'} : {};
 
         return (
             <div className={styles.Header}>
-                <div className={styles.Left}>OUTLET</div>
+                <div className={styles.Left}>outlet</div>
                 <div className={styles.Right}>
                     <div className={styles.Nav}>
                         <div className={styles.NavItem}>

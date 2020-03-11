@@ -12,7 +12,7 @@ class HomeRegistrationModal extends Component {
                 <div className={[styles.Container, globalStyles.SansSerifFont].join(' ')}>
                     <p className={styles.Header}>Last Step!</p>
                     <p>Would you like to earn money by joining the grid?</p>
-                    <Link to={"/chargestationsearch/" + this.props.user_id}>
+                    <Link to={"/chargestationsearch"}>
                         <p>Skip</p>
                     </Link>
                     <div>
@@ -23,7 +23,7 @@ class HomeRegistrationModal extends Component {
                         <input className={styles.FormInput} style={{float: 'left', width: "31%", marginLeft: '20px'}} placeholder="zipcode" />
                         <input className={styles.FormInput} style={{float: 'left', width: "31%", marginLeft: '20px'}} placeholder="State" />
                     </div>
-                    <Link to={"/chargestationsearch/" + this.props.user_id}>
+                    <Link to={"/chargestationsearch"}>
                         <button className={styles.FinishBtn}>
                             Finish
                         </button>
