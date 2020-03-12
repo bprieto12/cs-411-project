@@ -85,43 +85,9 @@ app.get("/api/search/homes", (req, res) => {
 });
 
 app.get("/api/userCars", (req, res) => {
-    // const cars = [
-    //     {
-    //         "vehicleid": 1234,
-    //         "lpn": '3VER720',
-    //         "year": 2008,
-    //         "make": 'Toyota',
-    //         "model": 'Prius',
-    //         "plugType": 'Type A',
-    //         "isDefault": true
-    //     },
-    //     {
-    //         "vehicleid": 2224,
-    //         "lpn": '8WRS230',
-    //         "year": 2018,
-    //         "make": 'Tesla',
-    //         "model": 'Model S',
-    //         "plugType": 'Type B',
-    //         "isDefault": false
-    //     },
-    //     {
-    //         "vehicleid": 3333,
-    //         "lpn": '5WER234',
-    //         "year": 2010,
-    //         "make": 'Chevrolet',
-    //         "model": 'Bolt',
-    //         "plugType": 'Type A',
-    //         "isDefault": false
-    //     }
-    // ];
-
-    // const cars = [{"vehicle_id":200103,"Lpn":"ZVQ 9165","model_year":2016,"make_name":"Smart","model_name":"fortwo electric ","plugType":"Type 2 plug "},{"vehicle_id":200049,"Lpn":"LDN 2268","model_year":2014,"make_name":"Chevrolet","model_name":"Spark EV","plugType":"CHAdeMO plug "}]
-
-    // res.json(cars);
-
     if (req.query.user_id) {
         const query = 'SELECT v.vehicle_id, Lpn, model_year, \
-        make_name, model_name, pt.name as plugType \
+        make_name, model_name, default_vehicle as isDefault, pt.name as plugType \
         FROM Vehicle v \
             JOIN UserVehicle uv on (uv.Vehicle_id = v.Vehicle_id) \
             JOIN PlugType pt on (pt.Plug_type_id = v.plug_type_id) \

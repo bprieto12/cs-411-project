@@ -32,7 +32,7 @@ class SearchPage extends Component {
             console.log(userCars);
             if (userCars) {
                 userCars.map(vehicle => {
-                    vehicle.isSelected = vehicle.isDefault | false;
+                    vehicle.isSelected = vehicle.isDefault == 1;
                 });
                 
                 this.setState({
