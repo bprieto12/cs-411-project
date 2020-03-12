@@ -6,6 +6,7 @@ class HomePageHeader extends Component {
     state = {
         email: "",
         password: "",
+        user_id: null,
         logInSuccessful: false,
         error: false
     }
@@ -15,17 +16,17 @@ class HomePageHeader extends Component {
         fetch(path).then(response => {
             console.log(response);
             return response.json();
-        }).then(user_id => {
-            console.log(user_id)
-            this.setState({logInSuccessful: true});
+        }).then(user => {
+            console.log("user id: " + user[0].user_id)
+            this.setState({logInSuccessful: true, user_id: user[0].user_id});
         }).catch(err => {
-            this.setState({error: true});
+            this.setState({error: true, user_id: null});
         });
     }
     
     render() {
         if (this.state.logInSuccessful) {
-            return <Redirect push to="/chargestationsearch" />
+            return <Redirect push to={"/chargestationsearch/" + this.state.user_id} />
         }
 
         const errStyle = this.state.error ? {border: '1px solid red'} : {};

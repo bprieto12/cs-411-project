@@ -49,21 +49,17 @@ app.get('/api/sampleUsers', async (req, res) => {
 
 
 app.get('/api/userLogin/', (req, res) => {
-    const usn = req.query.email;
+    const email = req.query.email;
     const pwd = req.query.pwd;
 
-    let user_id = null;
-    users.forEach(user => {
-        if (user.email === usn && user.password === pwd) {
-            user_id = user.user_id;
+    let query = "select * from Users where email_addr='" + email + "' and pwd=" + pwd;
+    con.query(query, (err, rows) => {
+        if (err) {
+            res.status(400).json({"message": "User Not Found"});
+        } else {
+            res.json(rows);
         }
-    });
-
-    if (user_id) {
-        res.json({"user_id": user_id});
-    } else {
-        res.status(400).json({"message": "User Not Found"});
-    }
+    })
 });
 
 app.get("/api/search/homes", (req, res) => {
