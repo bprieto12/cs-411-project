@@ -22,23 +22,14 @@ con.connect((err) => {
     console.log('Connection established');
 });
 
-let users = [
-    {
-        "user_id": 1,
-        "email": "brenden.prieto@yahoo.com",
-        "password": "12345"
-    },
-    {
-        "user_id": 2,
-        "email": "abc@gmail.com",
-        "password": "2344"
-    },
-    {
-        "user_id": 3,
-        "email": "zzyzyx@hotmail.com",
-        "password": "1111"
-    }
-];
+let query = 'select * from Users limit 20';
+con.query(query, (err,rows) => {
+    if (err) {
+        console.log("error")
+    };
+    
+    console.log(rows);
+});
 
 app.get('/api/sampleUsers', async (req, res) => {
     let limit = 10;
@@ -58,102 +49,61 @@ app.get('/api/sampleUsers', async (req, res) => {
 
 
 app.get('/api/userLogin/', (req, res) => {
-    const usn = req.query.email;
+    const email = req.query.email;
     const pwd = req.query.pwd;
 
-    let user_id = null;
-    users.forEach(user => {
-        if (user.email === usn && user.password === pwd) {
-            user_id = user.user_id;
+    let query = "select * from Users where email_addr='" + email + "' and pwd=" + pwd;
+    con.query(query, (err, rows) => {
+        if (err) {
+            res.status(400).json({"message": "User Not Found"});
+        } else {
+            res.json(rows);
         }
-    });
+    })
+});
 
-    if (user_id) {
-        res.json({"user_id": user_id});
+app.get("/api/search/homes", (req, res) => {
+    if (req.query.latitude && req.query.longitude) {
+        let limit = 30;
+        if (req.query.show) {
+            limit = req.query.show;
+        }
+        let query = "select *, round(distance_meters / 1509, 3) as distance_miles \
+                    from ( \
+                        SELECT *,  \
+                        6371000 * acos(sin(radians(geo_latitude)) * sin(radians(" + req.query.latitude + ")) + cos(radians(geo_latitude)) * cos(radians(" + req.query.latitude + ")) * cos(radians(" + req.query.longitude + " - geo_longitude))) as distance_meters  \
+                        from Home \
+                    ) as a \
+                    order by distance_miles asc \
+        limit " + limit; 
+        con.query(query, (err, rows) => {
+            res.json(rows);
+        });
     } else {
-        res.status(400).json({"message": "User Not Found"});
+        res.status(400).json({"message": "a latitude and logitude must be passed to search for homes"});
     }
 });
 
-app.get("/api/homes", (req, res) => {
-    const homes = [{
-        "address": "2291 N Glennwood St",
-        "zipcode": 92865,
-        "favorite": 0,
-        "distance": 2.1,
-        "rating_stars": 4
-    },
-    {
-        "address": "23414 N Dians St",
-        "zipcode": 92865,
-        "favorite": 0,
-        "distance": 3.1,
-        "rating_stars": 4
-    },
-    {
-        "address": "114 W Commonwealth St",
-        "zipcode": 92849,
-        "favorite": 0,
-        "distance": 2.1,
-        "rating_stars": 4
-    }];
-    res.json(homes);
-});
-
 app.get("/api/userCars", (req, res) => {
-    // const cars = [
-    //     {
-    //         "vehicleid": 1234,
-    //         "lpn": '3VER720',
-    //         "year": 2008,
-    //         "make": 'Toyota',
-    //         "model": 'Prius',
-    //         "plugType": 'Type A',
-    //         "isDefault": true
-    //     },
-    //     {
-    //         "vehicleid": 2224,
-    //         "lpn": '8WRS230',
-    //         "year": 2018,
-    //         "make": 'Tesla',
-    //         "model": 'Model S',
-    //         "plugType": 'Type B',
-    //         "isDefault": false
-    //     },
-    //     {
-    //         "vehicleid": 3333,
-    //         "lpn": '5WER234',
-    //         "year": 2010,
-    //         "make": 'Chevrolet',
-    //         "model": 'Bolt',
-    //         "plugType": 'Type A',
-    //         "isDefault": false
-    //     }
-    // ];
-
-    const cars = [{"vehicle_id":200103,"Lpn":"ZVQ 9165","model_year":2016,"make_name":"Smart","model_name":"fortwo electric ","plugType":"Type 2 plug "},{"vehicle_id":200049,"Lpn":"LDN 2268","model_year":2014,"make_name":"Chevrolet","model_name":"Spark EV","plugType":"CHAdeMO plug "}]
-
-    res.json(cars);
-
-    // if (req.query.user_id) {
-    //     const query = 'SELECT v.vehicle_id, Lpn, model_year, \
-    //     make_name, model_name, pt.name as plugType \
-    //     FROM Vehicle v \
-    //         JOIN UserVehicle uv on (uv.Vehicle_id = v.Vehicle_id) \
-    //         JOIN PlugType pt on (pt.Plug_type_id = v.plug_type_id) \
-    //     where uv.user_id=' + req.query.user_id;
+    if (req.query.user_id) {
+        const query = 'SELECT v.vehicle_id, Lpn, model_year, \
+        make_name, model_name, default_vehicle as isDefault, pt.name as plugType \
+        FROM Vehicle v \
+            JOIN UserVehicle uv on (uv.Vehicle_id = v.Vehicle_id) \
+            JOIN PlugType pt on (pt.Plug_type_id = v.plug_type_id) \
+        where uv.user_id=' + req.query.user_id;
      
-    //     con.query(query, (err,rows) => {
-    //         if (err) {
-    //             console.log(err)
-    //             res.status(400).json({"message": "sample user query issue"});
-    //         };
+        con.query(query, (err,rows) => {
+            if (err) {
+                console.log(err)
+                res.status(400).json({"message": "sample user query issue"});
+            };
           
-    //         res.json(rows);
-    //     });
-    // } else {
-    //     res.status(400).json({"message": "user id required"});
-    // }
+            res.json(rows);
+        });
+    } else {
+        res.status(400).json({"message": "user id required"});
+    }
 });
 
 app.get('/api/ip', (req, res) => {

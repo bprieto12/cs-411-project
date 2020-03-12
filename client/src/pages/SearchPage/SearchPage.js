@@ -13,7 +13,6 @@ import ChargingModal from '../../containers/ChargingModal/ChargingModal';
 class SearchPage extends Component {
     state = {
         available_charging_stations: null,
-        user_location: "",
         onlyShowFavorites: false,
         sortBy: null,
         userVehicles: null,
@@ -23,37 +22,54 @@ class SearchPage extends Component {
     componentDidMount() {
         // get user vehicles
         // assign the userVehicleSelected to the default vehicle
-        
-        fetch("/api/userCars").then(response => {
+        let paths = window.location.href.split('/');
+        const user_id = paths[paths.length - 1];
+        const path = "/api/userCars?user_id=" + user_id;
+        fetch(path).then(response => {
             console.log(response);
             return response.json();
         }).then(userCars => {
-            userCars.map(vehicle => {
-                vehicle.isSelected = vehicle.isDefault | false;
-            });
             console.log(userCars);
-            this.setState({
-                userVehicles: userCars
-            });
+            if (userCars) {
+                userCars.map(vehicle => {
+                    vehicle.isSelected = vehicle.isDefault == 1;
+                });
+                
+                this.setState({
+                    userVehicles: userCars
+                });
+            } else {
+                this.setState({
+                    userVehicles: null
+                });
+            }
+        }).catch(err => {
+            this.setState({userVehicles: null})
         })
 
         
     }
 
-    onSearch = () => {
-        fetch("/api/homes").then(response => {
-            return response.json();
-        }).then(homes => {
-            this.setState({available_charging_stations: homes});
-        }).catch(err => {
-            console.log(err);
-        });
-
-        fetch("/api/ip").then(response => {
-            return response.json();
-        }).then(ip => {
-            console.log(ip);
-        })
+    onSearch = async (addr) => {
+        // either get the geolocation from the IP or the address, then
+        console.log(addr);
+        let address_url = new URL("https://us1.locationiq.com/v1/search.php");
+        address_url.searchParams.set("key", "32198d7df186da");
+        address_url.searchParams.set("format", "json");
+        address_url.searchParams.set("q", addr);
+        
+        let response = await fetch(address_url);
+        
+        if (response.ok) {
+            let geo_data = await response.json();
+            let search_path = "/api/search/homes?latitude=" + geo_data[0].lat + "&longitude=" + geo_data[0].lon;
+            let search_response = await fetch(search_path);
+            if (search_response.ok) {
+                let nearby_homes = await search_response.json();
+                console.log(nearby_homes);
+                this.setState({available_charging_stations: nearby_homes})
+            }
+        }
     }
 
     onUserVehicleSelected = (selectedLPN) => {
