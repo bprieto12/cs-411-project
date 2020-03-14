@@ -12,6 +12,16 @@ let con = mysql.createConnection({
     database: 'outletprototype_website'
 });
 
+/*
+let insertVehicle = "INSERT INTO UserVehicle (user_vehicle_id, user_id, Vehicle_id, Lpn, default_vehicle) VALUES ('"   \
++ req.query.user_vehicle_id + "'," + req.query.user_id + "'," + req.query.Vehicle_id + "'," + req.query.Lpn + "',"  \
++ req.query.default_vehicle + ")";
+
+let deleteVehicle = 'DELETE FROM UserVehicle WHERE user_vehicle_id = ' + req.query.user_vehicle_id;
+
+let searchVehicle = 'SELECT * FROM UserVehicle U,Vehicle V WHERE V.Vehicle_id = U.Vehicle_id AND U.user_vehicle_id = ' + req.query.user_vehicle_id;
+*/
+
 con.connect((err) => {
     if(err){
         console.log(err)
