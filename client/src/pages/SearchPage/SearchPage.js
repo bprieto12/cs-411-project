@@ -9,6 +9,9 @@ import ChargingStationFilters from '../../components/ChargingStationFilters/Char
 import ChargingModal from '../../containers/ChargingModal/ChargingModal';
 
 // const host_url = "http://" + window.location.href.split('/')[2];
+let paths = window.location.href.split('/');
+const user_id = paths[paths.length - 1];
+console.log(user_id);
 
 class SearchPage extends Component {
     state = {
@@ -22,8 +25,6 @@ class SearchPage extends Component {
     componentDidMount() {
         // get user vehicles
         // assign the userVehicleSelected to the default vehicle
-        let paths = window.location.href.split('/');
-        const user_id = paths[paths.length - 1];
         const path = "/api/userCars?user_id=" + user_id;
         fetch(path).then(response => {
             console.log(response);
@@ -101,7 +102,7 @@ class SearchPage extends Component {
     render() {
         return (
             <Fragment>
-                <LoggedInHeader />
+                <LoggedInHeader user_id={user_id}/>
                 <Layout>
                     <div className={styles.PageStyles}>
                         <div className={styles.LeftPanel}>

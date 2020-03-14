@@ -22,14 +22,6 @@ con.connect((err) => {
     console.log('Connection established');
 });
 
-let query = 'select * from Users limit 20';
-con.query(query, (err,rows) => {
-    if (err) {
-        console.log("error")
-    };
-    
-    console.log(rows);
-});
 
 app.get('/api/sampleUsers', async (req, res) => {
     let limit = 10;
@@ -86,7 +78,7 @@ app.get("/api/search/homes", (req, res) => {
 
 app.get("/api/userCars", (req, res) => {
     if (req.query.user_id) {
-        const query = 'SELECT v.vehicle_id, Lpn, model_year, \
+        const query = 'SELECT v.vehicle_id, uv.user_vehicle_id, Lpn, model_year, \
         make_name, model_name, default_vehicle as isDefault, pt.name as plugType \
         FROM Vehicle v \
             JOIN UserVehicle uv on (uv.Vehicle_id = v.Vehicle_id) \
@@ -124,43 +116,76 @@ app.get('/api/vehicle/years', (req, res) => {
 
 app.get('/api/vehicle/makes', (req, res) => { 
     // require year
-    if (req.query.model_year) {
-        const query_str = 'SELECT distinct make_name FROM Vehicle where model_year=' + req.query.model_year;
-        con.query(query_str, (err,rows) => {
-            if(err) {
-                console.log(err)
-                res.status(400).json({"message": "sample user query issue"});
-            };
+    // if (req.query.model_year) {
+    //     const query_str = 'SELECT distinct make_name FROM Vehicle where model_year=' + req.query.model_year;
+    //     con.query(query_str, (err,rows) => {
+    //         if(err) {
+    //             console.log(err)
+    //             res.status(400).json({"message": "sample user query issue"});
+    //         };
           
-            res.json(rows);
-        });
-    } else {
-        res.status(400).json({'message': 'A year must be provided in the parameters'});
-    }
+    //         res.json(rows);
+    //     });
+    // } else {
+    //     res.status(400).json({'message': 'A year must be provided in the parameters'});
+    // }
+    const query_str = 'SELECT distinct make_name FROM Vehicle';
+    con.query(query_str, (err,rows) => {
+        if(err) {
+            console.log(err)
+            res.status(400).json({"message": "sample user query issue"});
+        };
+        
+        res.json(rows);
+    });
+    
 })
 
 app.get('/api/vehicle/models', (req, res) => {
     // require year and make
-    if (req.query.model_year && req.query.make_name) {
-        const models = 'SELECT distinct model_name FROM Vehicle where model_year = ' + req.query.model_year + " and make_name = '" + req.query.make_name + "'";
+    // if (req.query.model_year && req.query.make_name) {
+    //     const models = 'SELECT distinct model_name FROM Vehicle where model_year = ' + req.query.model_year + " and make_name = '" + req.query.make_name + "'";
         
-        con.query(models, (err,rows) => {
-            if(err) {
-                console.log(err)
-                res.status(400).json({"message": "sample user query issue"});
-            };
+    //     con.query(models, (err,rows) => {
+    //         if(err) {
+    //             console.log(err)
+    //             res.status(400).json({"message": "sample user query issue"});
+    //         };
           
-            res.json(rows);
-        });
-    } else {
-        res.status(400).json({'message': 'A model year and make name must be provided in the parameters'});
-    }
+    //         res.json(rows);
+    //     });
+    // } else {
+    //     res.status(400).json({'message': 'A model year and make name must be provided in the parameters'});
+    // }
+    const models = 'SELECT distinct model_name FROM Vehicle';
+        
+    con.query(models, (err,rows) => {
+        if(err) {
+            console.log(err)
+            res.status(400).json({"message": "sample user query issue"});
+        };
+        
+        res.json(rows);
+    });
+})
+
+app.get('/api/vehicle/plugTypes', (req, res) => {
+
+    const query = 'SELECT name as plugType FROM PlugType';
+    
+    con.query(query, (err,rows) => {
+        if(err) {
+            console.log(err)
+            res.status(400).json({"message": "plug types query had an issue"});
+        };
+        res.json(rows);
+    });
 })
 
 app.post('/api/register/newUser', (req, res) => {
     let user_exists = false;
     let max_user_id = 0;
-    console.log(req.query.email);
+
     users.forEach(user => {
         max_user_id = user.user_id;
         console.log(user.email);
@@ -168,7 +193,7 @@ app.post('/api/register/newUser', (req, res) => {
             user_exists = true;
         }
     });
-    console.log(user_exists);
+
     if (user_exists) {
         res.status(404).json({"message": "User already exists"});
     } else {
