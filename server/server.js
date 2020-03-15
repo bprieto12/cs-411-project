@@ -23,6 +23,8 @@ con.connect((err) => {
 });
 
 
+
+
 app.get('/api/sampleUsers', async (req, res) => {
     let limit = 10;
     if (req.query.limit) {
@@ -97,6 +99,25 @@ app.get("/api/userCars", (req, res) => {
         res.status(400).json({"message": "user id required"});
     }
 });
+
+app.get("/api/vehicleId", (req, res) => {
+    if (req.query.model_year && 
+        req.query.make_name && 
+        req.query.model_name &&
+        req.query.plugType) {
+        const query = 'SELECT vehicle_id from Vehicle v join PlugType p on (p.plug_type_id = v.plug_type_id) where model_year=' + req.query.model_year +
+                      " and make_name='" + req.query.make_name + "' and model_name='" + req.query.model_name +
+                      "' and p.name='" + req.query.plugType + "'";
+        con.query(query, (err, rows) => {
+            if (err) {
+                res.status(400).json({"message": "error in vehicle Id"});
+            }
+            res.json(rows);
+        })
+    } else {
+        res.status(400).json({"message": "vehicle id query requires model year make name model name and plug type"})
+    }
+})
 
 app.get('/api/ip', (req, res) => {
     res.json({"ip": req.ip});
@@ -182,6 +203,76 @@ app.get('/api/vehicle/plugTypes', (req, res) => {
     });
 })
 
+app.post('/api/register/vehicle', (req, res) => {
+    if (req.query.user_id && req.query.vehicle_id && req.query.Lpn && req.query.isDefault) {
+        let new_user_vehicle_id_query = 'select max(user_vehicle_id) + 1 as user_vehicle_id from UserVehicle';
+        console.log(new_user_vehicle_id_query);
+        con.query(new_user_vehicle_id_query, (err, rows) => {
+            if (err) {
+                res.status(400).json({"message": "issue getting new id"});
+            }
+            let new_user_vehicle_id = rows[0].user_vehicle_id;
+            console.log(new_user_vehicle_id);
+            let submit_new_vehicle_query = 'insert into UserVehicle values (' +
+                    new_user_vehicle_id + ", " +
+                    req.query.user_id + ", " +
+                    req.query.vehicle_id + ", '" +
+                    req.query.Lpn + "', " + 
+                    req.query.isDefault + ")";
+            console.log(submit_new_vehicle_query);
+            con.query(submit_new_vehicle_query, (err, rows) => {
+                if (err) {
+                    res.json({"message": "issue posting new vehicle"});
+                }
+                let vehicle_info_query = "SELECT v.vehicle_id, uv.user_vehicle_id, Lpn, model_year, \
+                make_name, model_name, default_vehicle as isDefault, pt.name as plugType \
+                FROM Vehicle v \
+                    JOIN UserVehicle uv on (uv.Vehicle_id = v.Vehicle_id) \
+                    JOIN PlugType pt on (pt.Plug_type_id = v.plug_type_id) \
+                where uv.user_vehicle_id = " + new_user_vehicle_id;
+                console.log(vehicle_info_query);
+                con.query(vehicle_info_query, (err, rows) => {
+                    if (err) {
+                        res.json({"message": "issue getting user vehicle"});
+                    }
+                    res.json(rows);
+                });
+            })
+        })
+    }
+    
+});
+
+app.post('/api/remove/user_vehicle/:user_vehicle_id', (req, res) => {
+    const query = "delete from UserVehicle where user_vehicle_id=" + req.params.user_vehicle_id;
+    console.log(query)
+    con.query(query, (err, rows) => {
+        if (err) {
+            res.status(400).json({"message": "error deleting vehicle"});
+        }
+        console.log(rows);
+        res.json({"message": "ok"});
+    })
+})
+
+app.post('/api/update/user_vehicle/:user_vehicle_id', (req, res) => {
+
+    if (req.query.vehicle_id && req.query.Lpn && req.query.isDefault) {
+        const query = 'update UserVehicle \
+                       set vehicle_id=' + req.query.vehicle_id + 
+                        ", Lpn='" + req.query.Lpn + "', " +
+                        "default_vehicle=" + req.query.isDefault + 
+                        " where user_vehicle_id=" + req.params.user_vehicle_id;
+        
+        con.query(query, (err, rows) => {
+            if (err) {
+                res.status(400).json({"message": "issue updating vehicle"});
+            }
+            res.json({"message": "update successful"});
+        })
+    }
+});
+
 app.post('/api/register/newUser', (req, res) => {
     let user_exists = false;
     let max_user_id = 0;
@@ -195,14 +286,10 @@ app.post('/api/register/newUser', (req, res) => {
     });
 
     if (user_exists) {
-        res.status(404).json({"message": "User already exists"});
+        res.status(400).json({"message": "User already exists"});
     } else {
         res.json({"user_id": max_user_id + 1});
     }
 });
-
-app.post('/api/register/vehicle/:user_id', (req, res) => {
-    res.json("message", "ok");
-})
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

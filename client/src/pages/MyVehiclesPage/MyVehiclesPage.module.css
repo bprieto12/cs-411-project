@@ -1,3 +1,5 @@
+
+
 .NoVehiclesMessage {
     background-color: #c0c0c0;
     padding: 20px;
@@ -15,6 +17,10 @@
     margin-bottom: 15px;
     margin-top: 15px;
     cursor: pointer;
+}
+
+.AddVehicleBtn:hover {
+    background-color: #4ab2ff;
 }
 
 .EditBtn {
@@ -57,7 +63,9 @@
 }
 
 .StaticVehicle {
+    box-sizing: content-box;
     background-color: white;
+    border-radius: 3px;
     padding: 35px;
     margin-bottom: 5px;
     font-weight: bold;
