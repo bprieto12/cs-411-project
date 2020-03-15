@@ -33,30 +33,11 @@ con.connect((err) => {
 });
 
 
-
-
-app.get('/api/sampleUsers', async (req, res) => {
-    let limit = 10;
-    if (req.query.limit) {
-        limit = req.query.limit;
-    }
-
-    let query = 'select * from Users limit ' + limit;
-    con.query(query, (err,rows) => {
-        if (err) {
-            res.status(400).json({"message": "sample user query issue"});
-        };
-      
-        res.json(rows);
-    });
-})
-
-
 app.get('/api/userLogin/', (req, res) => {
     const email = req.query.email;
     const pwd = req.query.pwd;
 
-    let query = "select * from Users where email_addr='" + email + "' and pwd=" + pwd;
+    let query = "select * from Users where email_addr='" + email + "' and pwd='" + pwd + "'";
     con.query(query, (err, rows) => {
         if (err) {
             res.status(400).json({"message": "User Not Found"});

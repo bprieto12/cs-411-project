@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEdit } from '@fortawesome/fontawesome-free-solid';
 
 let paths = window.location.href.split('/');
-const user_id = paths[paths.length - 1];
+let user_id = paths[paths.length - 1];
 console.log(user_id);
 
 class MyVehiclesPage extends Component {
@@ -106,6 +106,8 @@ class MyVehiclesPage extends Component {
             
             if (vid.length > 0) {
                 // post new vehicle
+                let paths = window.location.href.split('/');
+                let user_id = paths[paths.length - 1];
                 let params = {
                     user_id: user_id,
                     vehicle_id: vid[0].vehicle_id,

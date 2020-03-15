@@ -8,7 +8,6 @@ const UserCarSelector = props => {
     let displayed_vehicles = null;
     if (props.userVehicles) {
         displayed_vehicles = props.userVehicles.map(vehicle => {
-            console.log(vehicle);
             return <UserCar 
                 key={vehicle.Lpn} 
                 vehicle={vehicle}
