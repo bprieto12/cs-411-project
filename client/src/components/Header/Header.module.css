@@ -3,13 +3,14 @@
     top: 0;
     padding-left: 10%;
     padding-right: 10%;
-    color: white;
-    background-color: #323232;
+    /* color: white; */
+    /* background-color: #323232; */
+    background-color: white;
 }
 
 .Left {
     float: left;
-    font-size: 50px;
+    font-size: 35px;
     /* font-family: 'Playfair Display SC', serif; */
 }
 
@@ -34,20 +35,38 @@
     flex-direction: row;
 }
 
-.NavItem:hover {
-    text-decoration: underline;
-    color: #84CEEB;
+/* .NavItem:hover { */
+    /* text-decoration: underline;
+    color: #84CEEB; */
+    /* background-color: white; */
+    /* color: #0079D3;
+    border-bottom: 5px solid #0079D3; */
+/* } */
+
+.link {
+    text-decoration: none;
+    color: black;
+    margin-left: 20px;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 10px;
+}
+
+.link:hover{
+    color: #0079D3;
+    border-bottom: 5px solid #0079D3;
 }
 
 .NavItem {
     margin-left: 20px;
-    font-size: 20px;
-    /* font-family: 'Montserrat', sans-serif; */
-    margin-top: 20px;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 10px;
 }
 
+
+
 /* .NavItem > input {
-    padding: 10px;
     margin: 10px;
     margin: 0 10px 0 10px;
 } */
@@ -56,19 +75,24 @@
 .NavInput {
     font-size: 16px;
     margin-left: 10px;
+    padding: 5px;
+    margin-bottom: 10px;
 }
 
 .NavBtn {
     font-size: 16px;
-    border-radius: 0;
+    border-radius: 3px;
     border: none;
     margin-left: 10px;
-    padding: 3px;
-    background-color: #C1C8E4;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 0px 25px;
+    color: white;
+    background-color: #0079D3;
 }
 
 .NavBtn:hover {
-    background-color: #8860D0;
+    background-color: #4ab2ff;
     color: white;
 }
 

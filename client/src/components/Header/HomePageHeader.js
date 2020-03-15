@@ -33,7 +33,7 @@ class HomePageHeader extends Component {
 
         return (
             <div className={styles.Header}>
-                <div className={styles.Left}>outlet</div>
+                <div className={styles.Left}><b>outlet</b></div>
                 <div className={styles.Right}>
                     <div className={styles.Nav}>
                         <div className={styles.NavItem}>
@@ -56,11 +56,11 @@ class HomePageHeader extends Component {
                                 onChange={e => this.setState({password: e.target.value, error: false})}
                             />
                         </div>
-                        <div className={styles.NavItem}>
+                        {/* <div className={styles.NavItem}> */}
                             <button 
                                 className={styles.NavBtn}
                                 onClick={() => this.handleSignInAttempt()}>Log in</button>
-                        </div>
+                        {/* </div> */}
                     </div>
                 </div>
             </div>

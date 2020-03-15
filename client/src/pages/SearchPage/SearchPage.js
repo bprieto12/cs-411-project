@@ -10,7 +10,7 @@ import ChargingModal from '../../containers/ChargingModal/ChargingModal';
 
 // const host_url = "http://" + window.location.href.split('/')[2];
 let paths = window.location.href.split('/');
-const user_id = paths[paths.length - 1];
+let user_id = paths[paths.length - 1];
 console.log(user_id);
 
 class SearchPage extends Component {
@@ -25,6 +25,8 @@ class SearchPage extends Component {
     componentDidMount() {
         // get user vehicles
         // assign the userVehicleSelected to the default vehicle
+        let paths = window.location.href.split('/');
+        let user_id = paths[paths.length - 1];
         const path = "/api/userCars?user_id=" + user_id;
         fetch(path).then(response => {
             console.log(response);

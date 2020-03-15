@@ -25,7 +25,8 @@
 }
 
 .UserCar:hover {
-    background-color: lightgreen;
+    background-color: #4ab2ff;
+    color: white;
     /* box-shadow: 2px 2px 2px solid #888; */
 }
 
@@ -34,7 +35,7 @@
 }
 
 .UserCarSelected {
-    border: 1px solid #1FCC03;
+    border: 1px solid #0079D3;
 }
 
 .CheckBoxUnselected {
@@ -43,7 +44,7 @@
 
 .CheckBoxSelected {
     color: white;
-    background-color: #1FCC03;
+    background-color: #0079D3;
     /* padding-top: 25px; */
     /* align-self: center; */
 }

@@ -17,6 +17,8 @@ class MyVehiclesPage extends Component {
     }
 
     componentDidMount = () => {
+        let paths = window.location.href.split('/');
+        let user_id = paths[paths.length - 1];
         const path = "/api/userCars?user_id=" + user_id;
         fetch(path).then(response => {
             return response.json();
