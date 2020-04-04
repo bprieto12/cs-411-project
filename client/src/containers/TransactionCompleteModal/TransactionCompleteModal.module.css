@@ -1,0 +1,45 @@
+.Info {
+    background-color: #E0FCFF;
+}
+
+.Amounts {
+    overflow: hidden;
+    padding: 48px 24px;
+}
+
+.Amount > p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.Icon {
+    color: #627D98;
+    margin-right: 16px;
+}
+
+.Amount {
+    color: #044E54;
+    font-size: 50px;
+    float: left;
+    width: 50%;
+}
+
+.Rating {
+    padding: 24px 24px 48px 24px;
+    font-size: 28px;
+    color: #627D98;
+    background-color: white;
+}
+
+.FinishBtn {
+    background-color: #14919B;
+    color: white;
+    padding: 24px 0px;
+    text-align: center;;
+    font-size: 36px;
+}
+
+.StarIcon {
+    font-size: 60px;
+    display: inline-block;
+}

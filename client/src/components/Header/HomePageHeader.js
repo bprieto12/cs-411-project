@@ -40,7 +40,7 @@ class HomePageHeader extends Component {
                             <input 
                                 className={styles.NavInput}
                                 style={errStyle}
-                                placeholder="email" 
+                                placeholder="Email" 
                                 type="text"
                                 value={this.state.email}
                                 onChange={e => this.setState({email: e.target.value, error: false})}
@@ -50,7 +50,7 @@ class HomePageHeader extends Component {
                             <input 
                                 className={styles.NavInput} 
                                 style={errStyle}
-                                placeholder="password" 
+                                placeholder="Password" 
                                 type="text"
                                 value={this.state.password}
                                 onChange={e => this.setState({password: e.target.value, error: false})}

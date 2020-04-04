@@ -33,7 +33,6 @@
 	margin: auto;
 	top: 10%;
 	background: white;
-	border: 1px solid #ccc;
 	box-shadow: -2rem 2rem 2rem rgba(0,0,0,0.2);
 	filter: blur(0px);
 	transform: scale(1);
@@ -46,10 +45,6 @@ h2 {
 	border-bottom: 1px solid #ccc;
 	padding: 1rem;
 	margin: 0;
-}
-
-.Body {
-	padding: 1rem;
 }
 
 .Actions {

@@ -49,7 +49,7 @@ app.get('/api/userLogin/', (req, res) => {
 
 app.get("/api/search/homes", (req, res) => {
     if (req.query.latitude && req.query.longitude) {
-        let limit = 30;
+        let limit = 10;
         if (req.query.show) {
             limit = req.query.show;
         }

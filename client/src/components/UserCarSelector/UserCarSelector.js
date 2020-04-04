@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './UserCarSelector.module.css';
 import fontawesome from '@fortawesome/fontawesome'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/fontawesome-free-solid';
 
 const UserCarSelector = props => {

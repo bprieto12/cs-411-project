@@ -7,6 +7,7 @@ import Layout from '../../components/Layout/Layout';
 import LoggedInHeader from '../../components/Header/LoggedInHeader';
 import ChargingStationFilters from '../../components/ChargingStationFilters/ChargingStationFilters';
 import ChargingModal from '../../containers/ChargingModal/ChargingModal';
+import TransactionCompleteModal from '../../containers/TransactionCompleteModal/TransactionCompleteModal';
 
 // const host_url = "http://" + window.location.href.split('/')[2];
 let paths = window.location.href.split('/');
@@ -19,7 +20,11 @@ class SearchPage extends Component {
         onlyShowFavorites: false,
         sortBy: null,
         userVehicles: null,
-        showModal: false
+        showChargingModal: false,
+        showTransactionCompleteModal: false,
+        selectedHome: null,
+        time_elapsed: 0,
+        amount_due: 0
     }
 
     componentDidMount() {
@@ -93,12 +98,21 @@ class SearchPage extends Component {
         this.setState({sortBy: type});
     }
 
-    handleCheckIn = () => {
-        this.setState({showModal: true});
+    handleCheckIn = (home) => {
+        this.setState({
+            showChargingModal: true, 
+            showTransactionCompleteModal: false,
+            selectedHome: home
+        });
     }
 
-    handleCheckOut = () => {
-        this.setState({showModal: false});
+    handleCheckOut = (final_time_elapsed, final_amount_due) => {
+        this.setState({
+            showChargingModal: false,
+            showTransactionCompleteModal: true,
+            time_elapsed: final_time_elapsed,
+            amount_due: final_amount_due
+        });
     }
     
     render() {
@@ -128,7 +142,14 @@ class SearchPage extends Component {
                             />
                         </div>
                     </div>
-                    <ChargingModal checkout={this.handleCheckOut}/>
+                    <ChargingModal show={this.state.showChargingModal}
+                                   home={this.state.selectedHome} 
+                                   handleCheckOut={this.handleCheckOut}/>
+                    <TransactionCompleteModal 
+                        show={this.state.showTransactionCompleteModal}
+                        home={this.state.selectedHome}
+                        amount_due={this.state.amount_due}
+                        time_elapsed={this.state.time_elapsed} />
                 </Layout>
             </Fragment>
         );

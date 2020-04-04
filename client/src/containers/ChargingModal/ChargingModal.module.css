@@ -1,0 +1,45 @@
+.Info {
+    background-color: #DCEEFB;
+    padding: 30px;
+}
+
+.Info > p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.Amounts {
+    overflow: hidden;
+    padding: 48px 0px;
+}
+
+.Amount > p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.Icon {
+    color: #627D98;
+    margin-right: 16px;
+}
+
+.Amount {
+    color: #0A558C;
+    font-size: 50px;
+    float: left;
+    width: 50%;
+}
+
+.StopChargingBtn {
+    text-align: center;
+    padding: 20px 0px;
+    font-size: 30px;
+    color: #186FAF;
+    cursor: pointer;
+}
+
+.StopChargingBtn:hover {
+    background-color: #186FAF;
+    color: white;
+}
+

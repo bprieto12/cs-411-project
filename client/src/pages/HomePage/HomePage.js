@@ -5,6 +5,7 @@ import HomePageHeader from '../../components/Header/HomePageHeader';
 import Layout from '../../components/Layout/Layout';
 import HomeRegistrationModal from '../../containers/HomeRegistrationModal/HomeRegistrationModal';
 import globalStyles from '../../core/GlobalStyles.module.css';
+import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
 
 const isValidEmail = email => {
     return email != null && email != '';
@@ -166,8 +167,22 @@ class HomePage extends Component {
                 <Layout>
                     <div className={styles.Home}>
                         <div className={[styles.Left, globalStyles.SerifFont].join(' ')}>
-                            <h1>Don't let range anxiety stop you from doing what you want!</h1>
-                            <p>Come join the thousands of other EV drivers who have experienced the flexible and modern solution to EV charging</p> 
+                            
+                            {/* <Map center={[33.826350,-117.841490]} zoom={13}>
+                                <TileLayer
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                />
+                                <Marker position={[33.826350,-117.841490]}>
+                                <Popup>
+                                    Home. <br /> base
+                                </Popup>
+                                </Marker>
+                            </Map> */}
+                            <div style={{width: '25em'}}> 
+                                <h1>Don't let range anxiety stop you from doing what you want!</h1>
+                                <p>Come join the thousands of other EV drivers who have experienced the flexible and modern solution to EV charging</p> 
+                            </div>
                         </div>
                         <div className={styles.Right}>
                             <SignUpForm showWelcomeModal={this.showWelcomeModal} />
