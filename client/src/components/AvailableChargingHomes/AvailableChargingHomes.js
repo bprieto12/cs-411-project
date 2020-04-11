@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./AvailableChargingHomes.module.css";
+import { noAuto } from "@fortawesome/fontawesome";
 
 const AvailableHomeBox = props => {
     const distance = props.home.distance_miles + " mi";
@@ -19,7 +20,7 @@ const AvailableHomeBox = props => {
 
 const AvailableChargingHomes = props => {
     let homes = null;
-
+    let homeClasses = [];
     if (props.available_homes) {
         homes = props.available_homes.map(home => {
             return <AvailableHomeBox 
@@ -27,12 +28,18 @@ const AvailableChargingHomes = props => {
                             key={home.street_addr} 
                             home={home} />;
         })
+        homeClasses = [styles.HomeContainer, styles.fade].join(" ");
+    } else {
+        homes = "No homes available";
+        homeClasses = styles.HomeContainer;
     }
 
     return (
         <div>
             <p className={styles.AvailablePrompt}>Available Now</p>
-            {homes}
+            <div className={homeClasses}>
+                {homes}
+            </div>
         </div>
     );
 }

@@ -29,29 +29,67 @@ const fancyTimeFormat = (time) => {
     return ret;
 }
 
-const Stars = props => {
-    return (
-        <div>
-            <div className={styles.StarIcon}>
-                <FontAwesomeIcon icon={regularStar} />
-            </div>
-            <div className={styles.StarIcon}>
-                <FontAwesomeIcon icon={regularStar} />
-            </div>
-            <div className={styles.StarIcon}>
-                <FontAwesomeIcon icon={regularStar} />
-            </div>
-            <div className={styles.StarIcon}>
-                <FontAwesomeIcon icon={regularStar} />
-            </div>
-            <div className={styles.StarIcon}>
-                <FontAwesomeIcon icon={regularStar} />
-            </div>
-        </div>
-    )
+class Stars extends Component {
+    state = {
+        hoveredStarNum: null,
+        clickedStarNum: null
+    }
+
+    handleHoverOver = (starNum) => {
+        this.setState({hoveredStarNum: starNum});
+    }
+
+    handleHoverLeave = () => {
+        this.setState({hoveredStarNum: null});
+    }
+
+    handleClick = (starNum) => {
+        console.log('in handle click');
+        console.log(starNum);
+        this.setState({clickedStarNum: starNum, hoveredStarNum: null});
+        this.props.handleRating(starNum);
+    }
+
+    render() {
+        let stars = [1, 2, 3, 4, 5].map(starNum => {
+            let starType = regularStar;
+            let starStyle = {};
+            // console.log(starNum);
+            // console.log(this.state.hoveredStarNum);
+            if (this.state.hoveredStarNum != null && this.state.hoveredStarNum >= starNum) {
+                starType =  solidStar;
+                starStyle = {color: '#E9B949', opacity: 0.5};
+            } else if (this.state.clickedStarNum != null && this.state.clickedStarNum >= starNum) {
+                starType = solidStar;
+                starStyle = {color: '#E9B949', opacity: 1};
+            } 
+            return (<div 
+                        key={starNum}
+                        style={starStyle}
+                        onMouseEnter={() => this.handleHoverOver(starNum)}
+                        onMouseLeave={() => this.handleHoverLeave()}
+                        onClick={() => this.handleClick(starNum)}
+                        className={styles.StarIcon}>
+                        <FontAwesomeIcon icon={starType} />
+                    </div>
+            );
+        });
+        return <div>{stars}</div>;
+        
+    }
 }
 
 class TransactionCompleteModal extends Component {
+    state = {
+        rating: null
+    }
+
+    handleRating = (rate) => {
+        this.setState({
+            rating: rate
+        })
+    }
+
     render() {
         return (
             <Modal show={this.props.show}>
@@ -69,9 +107,9 @@ class TransactionCompleteModal extends Component {
                     </div>
                     <div className={styles.Rating}>
                         <p>How would you rate your experience?</p>
-                        <Stars />
+                        <Stars handleRating={this.handleRating} />
                     </div>
-                    <div className={styles.FinishBtn}>
+                    <div onClick={() => this.props.handleFinish(this.state.rating)} className={styles.FinishBtn}>
                         FINISH
                     </div>
                 </div>

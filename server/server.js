@@ -53,14 +53,15 @@ app.get("/api/search/homes", (req, res) => {
         if (req.query.show) {
             limit = req.query.show;
         }
-        let query = "select *, round(distance_meters / 1509, 3) as distance_miles \
-                    from ( \
-                        SELECT *,  \
-                        6371000 * acos(sin(radians(geo_latitude)) * sin(radians(" + req.query.latitude + ")) + cos(radians(geo_latitude)) * cos(radians(" + req.query.latitude + ")) * cos(radians(" + req.query.longitude + " - geo_longitude))) as distance_meters  \
-                        from Home \
-                    ) as a \
-                    order by distance_miles asc \
-        limit " + limit; 
+        let query = "SELECT *, round((3959 / 1509 * acos(cos(radians(" + req.query.latitude + ")) * cos(radians(geo_latitude)) * cos(radians(geo_longitude) - radians(" + req.query.longitude + ")) + sin(radians(" + req.query.latitude + ")) * sin(radians(geo_latitude )))), 2) AS distance_miles FROM Home ORDER BY distance_miles limit 10";
+        // let query = "select *, round(distance_meters / 1509, 3) as distance_miles \
+        //             from ( \
+        //                 SELECT *,  \
+        //                 6371000 * acos(sin(radians(geo_latitude)) * sin(radians(" + req.query.latitude + ")) + cos(radians(geo_latitude)) * cos(radians(" + req.query.latitude + ")) * cos(radians(" + req.query.longitude + " - geo_longitude))) as distance_meters  \
+        //                 from Home \
+        //             ) as a \
+        //             order by distance_miles asc \
+        // limit " + limit; 
         con.query(query, (err, rows) => {
             res.json(rows);
         });
@@ -282,6 +283,10 @@ app.post('/api/register/newUser', (req, res) => {
         res.json({"user_id": max_user_id + 1});
     }
 });
+
+app.post('/api/newTransaction', (req, res) => {
+    
+})
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
