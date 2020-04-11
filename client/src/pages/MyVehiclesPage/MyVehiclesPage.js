@@ -259,9 +259,7 @@ class EditableVehicle extends Component {
         fetch(path).then(response => {
             return response.json();
         }).then(data => {
-
             if (data.length > 0) {
-                console.log("new v: " + data[0].vehicle_id);
                 let copy_vehicle = Object.assign({}, this.state.vehicle);
                 copy_vehicle.vehicle_id = data[0].vehicle_id;
                 copy_vehicle.model_year = this.state.model_year;
@@ -276,7 +274,185 @@ class EditableVehicle extends Component {
         }).catch(err => {
             this.setState({error: true});
         })
+    }
+
+    handleUpdateModelYear = (event) => {
+        // if no model year is provided, wipe out selection and options for make, model, and plug type
+        if (event.target.value == null || event.target.value == "") {
+            this.setState({
+                model_year: "",
+                make_name: "",
+                model_name: "",
+                plugType: "",
+                make_names: [],
+                model_names: [],
+                plugTypes: []
+            })
+        } else {
+            // if a model year is provided, call the makes endpoint, and update the available makes to select
+            //  if the existing selection for make is in the returned results, keep that make selected
+            //  if it isn't, clear the selected make
+            //  same logic for model and plug type
+            let selected_model_year = event.target.value;
+            console.log(selected_model_year);
+            fetch('/api/vehicle/makes?model_year=' + selected_model_year).then(response => {
+                return response.json();
+            }).then(makes_obj => {
+                let makes_list = makes_obj.map(make => make.make_name);
+                if (!makes_list.includes(this.state.make_name)) {
+                    this.setState({
+                        model_year: selected_model_year,
+                        make_name: "",
+                        model_name: "",
+                        plugType: "",
+                        make_names: makes_list.sort(),
+                        model_names: [],
+                        plugTypes: [],
+                        error: false
+                    });
+                } else {
+                    // call models endpoint with selected year and make and see if the current model selection is included in results
+                    fetch('/api/vehicle/models?model_year=' + selected_model_year + "&make_name=" + this.state.make_name).then(response => {
+                        return response.json();
+                    }).then(models_obj => {
+                        let models_list = models_obj.map(model => model.model_name);
+                        if (!models_list.includes(this.state.model_name)) {
+                            console.log("model not included")
+                            this.setState({
+                                model_year: selected_model_year,
+                                model_name: "",
+                                plugType: "",
+                                make_names: makes_list.sort(),
+                                model_names: models_list.sort(),
+                                plugTypes: [],
+                                error: false
+                            });
+                        } else {
+                            // call plugTypes endpoint with selected year, make, and model and see if the current plug type selection is included in results
+                            fetch('/api/vehicle/plugTypes?model_year=' + selected_model_year + "&make_name=" + this.state.make_name + "&model_name=" + this.state.model_name).then(response => {
+                                return response.json();
+                            }).then(plug_type_obj => {
+                                console.log(plug_type_obj)
+                                let plug_list = plug_type_obj.map(plug_type => plug_type.plugType);
+                                if (!plug_list.includes(this.state.plugType)) {
+                                    console.log("plug not included")
+                                    this.setState({
+                                        model_year: selected_model_year,
+                                        plugType: "",
+                                        make_names: makes_list.sort(),
+                                        model_names: models_list.sort(),
+                                        plugTypes: plug_list.sort(),
+                                        error: false
+                                    });
+                                } else {
+                                    console.log("plug included")
+                                    this.setState({
+                                        model_year: selected_model_year,
+                                        make_names: makes_list.sort(),
+                                        model_names: models_list.sort(),
+                                        plugTypes: plug_list.sort(),
+                                        error: false
+                                    })
+                                }
+                            }).catch(err => {
+                                console.log(err);
+                            })
+                        }
+                    });
+                }
+                
+            })
+        }
+    }
+
+    handleUpdateMakeName = (event) => {
+        let selected_make_name = event.target.value;
         
+        if (selected_make_name == null || selected_make_name == "") {
+            this.setState({
+                make_name: "",
+                model_name: "",
+                plugType: "",
+                model_names: [],
+                plugTypes: []
+            });
+        } else  {
+            fetch('/api/vehicle/models?model_year=' + this.state.model_year + "&make_name=" + selected_make_name).then(response => {
+                return response.json();
+            }).then(models_obj => {
+                let models_list = models_obj.map(model => model.model_name);
+                if (!models_list.includes(this.state.model_name)) {
+                    console.log("model not included")
+                    this.setState({
+                        make_name: selected_make_name,
+                        model_name: "",
+                        plugType: "",
+                        model_names: models_list.sort(),
+                        plugTypes: [],
+                        error: false
+                    });
+                } else {
+                    // call plugTypes endpoint with selected year, make, and model and see if the current plug type selection is included in results
+                    fetch('/api/vehicle/plugTypes?model_year=' + this.state.model_year + "&make_name=" + selected_make_name + "&model_name=" + this.state.model_name).then(response => {
+                        return response.json();
+                    }).then(plug_type_obj => {
+                        let plug_list = plug_type_obj.map(plug_type => plug_type.plugType);
+                        if (!plug_list.includes(this.state.plugType)) {
+                            this.setState({
+                                make_name: selected_make_name,
+                                plugType: "",
+                                model_names: models_list.sort(),
+                                plugTypes: plug_list.sort(),
+                                error: false
+                            });
+                        } else {
+                            console.log("plug included")
+                            this.setState({
+                                make_name: selected_make_name,
+                                model_names: models_list.sort(),
+                                plugTypes: plug_list.sort(),
+                                error: false
+                            })
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                }
+            });
+        }
+    }
+
+    handleUpdateModelName = (event) => {
+        let selected_model_name = event.target.value;
+        
+        if (selected_model_name == null || selected_model_name == "") {
+            this.setState({
+                model_name: "",
+                plugType: "",
+                model_names: [],
+                plugTypes: []
+            });
+        } else  {
+            fetch('/api/vehicle/plugTypes?model_year=' + this.state.model_year + "&make_name=" + this.state.make_name + "&model_name=" + selected_model_name).then(response => {
+                return response.json();
+            }).then(plug_type_obj => {
+                let plug_list = plug_type_obj.map(plug_type => plug_type.plugType);
+                if (!plug_list.includes(this.state.plugType)) {
+                    this.setState({
+                        model_name: selected_model_name,
+                        plugType: "",
+                        plugTypes: plug_list.sort(),
+                        error: false
+                    });
+                } else {
+                    this.setState({
+                        model_name: selected_model_name,
+                        plugTypes: plug_list.sort(),
+                        error: false
+                    })
+                }
+            });
+        }
     }
 
     render() {
@@ -287,7 +463,7 @@ class EditableVehicle extends Component {
                 <select 
                     value={this.state.model_year} 
                     className={styles.FormSelect}
-                    onChange={e => this.setState({model_year: e.target.value, error: false})}>
+                    onChange={e => this.handleUpdateModelYear(e)}>
                     <option value={""}>Model Year</option>
                     {this.state.model_years.map(model_year => {
                         return <option key={model_year} value={model_year}>{model_year}</option>;
@@ -296,7 +472,7 @@ class EditableVehicle extends Component {
                 <select 
                     value={this.state.make_name} 
                     className={styles.FormSelect}
-                    onChange={e => this.setState({make_name: e.target.value, error: false})}>
+                    onChange={e => this.handleUpdateMakeName(e)}>
                     <option value={""}>Make Name</option>
                     {this.state.make_names.map(make_name => {
                         return <option key={make_name} value={make_name}>{make_name}</option>;
@@ -305,7 +481,7 @@ class EditableVehicle extends Component {
                 <select 
                     value={this.state.model_name} 
                     className={styles.FormSelect}
-                    onChange={e => this.setState({model_name: e.target.value, error: false})}>
+                    onChange={e => this.handleUpdateModelName(e)}>
                     <option value={""}>Model Name</option>
                     {this.state.model_names.map(model_name => {
                         return <option key={model_name} value={model_name}>{model_name}</option>;

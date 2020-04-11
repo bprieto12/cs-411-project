@@ -129,70 +129,80 @@ app.get('/api/vehicle/years', (req, res) => {
 
 app.get('/api/vehicle/makes', (req, res) => { 
     // require year
-    // if (req.query.model_year) {
-    //     const query_str = 'SELECT distinct make_name FROM Vehicle where model_year=' + req.query.model_year;
-    //     con.query(query_str, (err,rows) => {
-    //         if(err) {
-    //             console.log(err)
-    //             res.status(400).json({"message": "sample user query issue"});
-    //         };
+    if (req.query.model_year) {
+        let query_str = 'SELECT distinct make_name FROM Vehicle where model_year=' + req.query.model_year;
+        con.query(query_str, (err,rows) => {
+            if(err) {
+                console.log(err)
+                res.status(400).json({"message": "sample user query issue"});
+            };
           
-    //         res.json(rows);
-    //     });
-    // } else {
-    //     res.status(400).json({'message': 'A year must be provided in the parameters'});
-    // }
-    const query_str = 'SELECT distinct make_name FROM Vehicle';
-    con.query(query_str, (err,rows) => {
-        if(err) {
-            console.log(err)
-            res.status(400).json({"message": "sample user query issue"});
-        };
-        
-        res.json(rows);
-    });
-    
+            res.json(rows);
+        });
+    } else {
+        let query_str = 'SELECT distinct make_name FROM Vehicle';
+        con.query(query_str, (err,rows) => {
+            if(err) {
+                console.log(err)
+                res.status(400).json({"message": "sample user query issue"});
+            };
+            
+            res.json(rows);
+        });
+    }
 })
 
 app.get('/api/vehicle/models', (req, res) => {
     // require year and make
-    // if (req.query.model_year && req.query.make_name) {
-    //     const models = 'SELECT distinct model_name FROM Vehicle where model_year = ' + req.query.model_year + " and make_name = '" + req.query.make_name + "'";
+    if (req.query.model_year && req.query.make_name) {
+        let models = 'SELECT distinct model_name FROM Vehicle where model_year = ' + req.query.model_year + " and make_name = '" + req.query.make_name + "'";
         
-    //     con.query(models, (err,rows) => {
-    //         if(err) {
-    //             console.log(err)
-    //             res.status(400).json({"message": "sample user query issue"});
-    //         };
+        con.query(models, (err,rows) => {
+            if(err) {
+                console.log(err)
+                res.status(400).json({"message": "sample user query issue"});
+            };
           
-    //         res.json(rows);
-    //     });
-    // } else {
-    //     res.status(400).json({'message': 'A model year and make name must be provided in the parameters'});
-    // }
-    const models = 'SELECT distinct model_name FROM Vehicle';
+            res.json(rows);
+        });
+    } else {
+        let models = 'SELECT distinct model_name FROM Vehicle';
         
-    con.query(models, (err,rows) => {
-        if(err) {
-            console.log(err)
-            res.status(400).json({"message": "sample user query issue"});
-        };
-        
-        res.json(rows);
-    });
+        con.query(models, (err,rows) => {
+            if(err) {
+                console.log(err)
+                res.status(400).json({"message": "sample user query issue"});
+            };
+            
+            res.json(rows);
+        });
+    }
+    
 })
 
 app.get('/api/vehicle/plugTypes', (req, res) => {
-
-    const query = 'SELECT name as plugType FROM PlugType';
-    
-    con.query(query, (err,rows) => {
-        if(err) {
-            console.log(err)
-            res.status(400).json({"message": "plug types query had an issue"});
-        };
-        res.json(rows);
-    });
+    if (req.query.model_year && req.query.make_name && req.query.model_name) {
+        let query = "select distinct name as plugType \
+        from Vehicle v join PlugType p on p.plug_type_id = v.plug_type_id \
+        where model_year = " + req.query.model_year + " and make_name = '" + req.query.make_name + "' and model_name='" + req.query.model_name + "'";
+        
+        con.query(query, (err,rows) => {
+            if(err) {
+                console.log(err)
+                res.status(400).json({"message": "plug types query had an issue"});
+            };
+            res.json(rows);
+        });
+    } else {
+        let query = 'select distinct name as plugType from PlugType'        
+        con.query(query, (err,rows) => {
+            if(err) {
+                console.log(err)
+                res.status(400).json({"message": "plug types query had an issue"});
+            };
+            res.json(rows);
+        });
+    }
 })
 
 app.post('/api/register/vehicle', (req, res) => {
