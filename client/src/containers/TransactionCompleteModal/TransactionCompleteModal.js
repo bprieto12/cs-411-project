@@ -90,6 +90,11 @@ class TransactionCompleteModal extends Component {
         })
     }
 
+    handleFinish = () => {
+        this.props.handleFinish(this.state.rating);
+        this.setState({rating: null});
+    }
+
     render() {
         return (
             <Modal show={this.props.show}>
@@ -109,7 +114,7 @@ class TransactionCompleteModal extends Component {
                         <p>How would you rate your experience?</p>
                         <Stars handleRating={this.handleRating} />
                     </div>
-                    <div onClick={() => this.props.handleFinish(this.state.rating)} className={styles.FinishBtn}>
+                    <div onClick={() => this.handleFinish()} className={styles.FinishBtn}>
                         FINISH
                     </div>
                 </div>

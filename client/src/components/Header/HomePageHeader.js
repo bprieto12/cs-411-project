@@ -51,7 +51,7 @@ class HomePageHeader extends Component {
                                 className={styles.NavInput} 
                                 style={errStyle}
                                 placeholder="Password" 
-                                type="text"
+                                type="password"
                                 value={this.state.password}
                                 onChange={e => this.setState({password: e.target.value, error: false})}
                             />

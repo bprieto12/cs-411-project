@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom';
 import SearchPage from '../pages/SearchPage/SearchPage';
 import MyVehiclesPage from '../pages/MyVehiclesPage/MyVehiclesPage';
+import TransactionsPage from '../pages/TransactionsPage/TransactionsPage';
 
 class App extends Component {
 	state = {
@@ -51,6 +52,9 @@ class App extends Component {
 		return (
 		    <div className="App">
 				<Switch>
+					<Route path="/transactions/:user_id">
+						<TransactionsPage />
+					</Route>
 					<Route path="/chargestationsearch/:user_id">
 						<SearchPage />
 					</Route>

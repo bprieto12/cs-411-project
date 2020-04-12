@@ -56,6 +56,7 @@ class ChargingModal extends Component {
     handleStopCharging = () => {
         console.log("in handleStopCharging")
         this.props.handleCheckOut(this.state.time_elapsed, this.state.amount_due);
+        this.setState({time_elapsed: 0, amount_due: 0});
     }
 
     render() {

@@ -73,7 +73,7 @@ class SearchPage extends Component {
         
         if (response.ok) {
             let geo_data = await response.json();
-         
+            console.log(geo_data);
             let search_path = "/api/search/homes?latitude=" + geo_data[0].lat + "&longitude=" + geo_data[0].lon;
             let search_response = await fetch(search_path);
             if (search_response.ok) {
@@ -108,7 +108,9 @@ class SearchPage extends Component {
         this.setState({
             showChargingModal: true, 
             showTransactionCompleteModal: false,
-            selectedHome: home
+            selectedHome: home,
+            amount_due: 0,
+            time_elapsed: 0
         });
     }
 
@@ -151,6 +153,7 @@ class SearchPage extends Component {
             selectedHome: null,
             time_elapsed: 0,
             amount_due: 0,
+            rating: 0
         })
     }
     

@@ -177,7 +177,7 @@ class MyVehiclesPage extends Component {
             <Fragment>
                 <LoggedInHeader />
                 <Layout>
-                    <h1>My Cars</h1>
+                    <h3 style={{marginTop: "36px"}}>My Cars</h3>
                     <button className={styles.AddVehicleBtn} onClick={() => this.handleAddNewVehicle()}>+ Add Vehicle</button>
                     {this.state.show_new_vehicle ? new_vehicle_container : null}
                     <VehiclesList 
