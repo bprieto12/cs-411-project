@@ -53,15 +53,17 @@ app.get("/api/search/homes", (req, res) => {
         if (req.query.show) {
             limit = req.query.show;
         }
-        let query = "SELECT *, round((3959 / 1509 * acos(cos(radians(" + req.query.latitude + ")) * cos(radians(geo_latitude)) * cos(radians(geo_longitude) - radians(" + req.query.longitude + ")) + sin(radians(" + req.query.latitude + ")) * sin(radians(geo_latitude )))), 2) AS distance_miles FROM Home ORDER BY distance_miles limit 10";
-        // let query = "select *, round(distance_meters / 1509, 3) as distance_miles \
-        //             from ( \
-        //                 SELECT *,  \
-        //                 6371000 * acos(sin(radians(geo_latitude)) * sin(radians(" + req.query.latitude + ")) + cos(radians(geo_latitude)) * cos(radians(" + req.query.latitude + ")) * cos(radians(" + req.query.longitude + " - geo_longitude))) as distance_meters  \
-        //                 from Home \
-        //             ) as a \
-        //             order by distance_miles asc \
-        // limit " + limit; 
+        // let query = "SELECT *, round((3959 / 1509 * acos(cos(radians(" + req.query.latitude + ")) * cos(radians(geo_latitude)) * cos(radians(geo_longitude) - radians(" + req.query.longitude + ")) + sin(radians(" + req.query.latitude + ")) * sin(radians(geo_latitude )))), 2) AS distance_miles FROM Home ORDER BY distance_miles limit 10";
+        let query = "select *, round(distance_meters / 1509, 3) as distance_miles \
+                    from ( \
+                        SELECT h.*, uh.user_home_id, uh.avg_rating,  \
+                        6371000 * acos(sin(radians(geo_latitude)) * sin(radians(" + req.query.latitude + ")) + cos(radians(geo_latitude)) * cos(radians(" + req.query.latitude + ")) * cos(radians(" + req.query.longitude + " - geo_longitude))) as distance_meters  \
+                        from Home h \
+                            join UserHome uh on (uh.home_id = h.home_id) \
+                    ) as a \
+                    order by distance_miles asc \
+        limit " + limit; 
+        
         con.query(query, (err, rows) => {
             res.json(rows);
         });
@@ -205,23 +207,73 @@ app.get('/api/vehicle/plugTypes', (req, res) => {
     }
 })
 
+app.get('/api/userPurchases/:user_id', (req, res) => {
+    let query = "select t.*, \
+    v.model_year, \
+    v.make_name,\
+    v.model_name,\
+    p.name as plugType,\
+    h.street_addr,\
+    h.zipcode,\
+    h.state\
+    from Transactions t \
+        join UserVehicle uv on (uv.user_vehicle_id = t.user_vehicle_id) \
+        join Vehicle v on (v.vehicle_id = uv.vehicle_id) \
+        join PlugType p on (p.plug_type_id = v.plug_type_id) \
+        join UserHome uh on (uh.user_home_id = t.user_home_id) \
+        join Home h on (h.home_id = uh.home_id) \
+    where uv.user_id = " + req.params.user_id;
+
+    con.query(query, (err, rows) => {
+        if (err) {
+            res.status(400).json({"message": "couldn't get transactions for user id: " + req.params.user_id});
+        }
+        res.json(rows);
+    })
+});
+
+app.get('/api/userSales/:user_id', (req, res) => {
+    let query = "select t.*, \
+    v.model_year, \
+    v.make_name,\
+    v.model_name,\
+    p.name as plugType,\
+    h.street_addr,\
+    h.zipcode,\
+    h.state\
+    from Transactions t \
+        join UserVehicle uv on (uv.user_vehicle_id = t.user_vehicle_id) \
+        join Vehicle v on (v.vehicle_id = uv.vehicle_id) \
+        join PlugType p on (p.plug_type_id = v.plug_type_id) \
+        join UserHome uh on (uh.user_home_id = t.user_home_id) \
+        join Home h on (h.home_id = uh.home_id) \
+    where uh.user_id = " + req.params.user_id;
+
+    con.query(query, (err, rows) => {
+        if (err) {
+            res.status(400).json({"message": "couldn't get transactions for user id: " + req.params.user_id});
+        }
+        res.json(rows);
+    })
+})
+
 app.post('/api/register/vehicle', (req, res) => {
     if (req.query.user_id && req.query.vehicle_id && req.query.Lpn && req.query.isDefault) {
         let new_user_vehicle_id_query = 'select max(user_vehicle_id) + 1 as user_vehicle_id from UserVehicle';
-        console.log(new_user_vehicle_id_query);
+        
         con.query(new_user_vehicle_id_query, (err, rows) => {
             if (err) {
                 res.status(400).json({"message": "issue getting new id"});
             }
             let new_user_vehicle_id = rows[0].user_vehicle_id;
-            console.log(new_user_vehicle_id);
+            
             let submit_new_vehicle_query = 'insert into UserVehicle values (' +
                     new_user_vehicle_id + ", " +
                     req.query.user_id + ", " +
                     req.query.vehicle_id + ", '" +
                     req.query.Lpn + "', " + 
                     req.query.isDefault + ")";
-            console.log(submit_new_vehicle_query);
+            
             con.query(submit_new_vehicle_query, (err, rows) => {
                 if (err) {
                     res.json({"message": "issue posting new vehicle"});
@@ -247,7 +299,7 @@ app.post('/api/register/vehicle', (req, res) => {
 
 app.post('/api/remove/user_vehicle/:user_vehicle_id', (req, res) => {
     const query = "delete from UserVehicle where user_vehicle_id=" + req.params.user_vehicle_id;
-    console.log(query)
+    
     con.query(query, (err, rows) => {
         if (err) {
             res.status(400).json({"message": "error deleting vehicle"});
@@ -281,7 +333,7 @@ app.post('/api/register/newUser', (req, res) => {
 
     users.forEach(user => {
         max_user_id = user.user_id;
-        console.log(user.email);
+      
         if (req.query.email === user.email) {
             user_exists = true;
         }
@@ -295,7 +347,22 @@ app.post('/api/register/newUser', (req, res) => {
 });
 
 app.post('/api/newTransaction', (req, res) => {
+    let query = "insert into Transactions \
+                 select max(trans_id) + 1," + req.query.user_vehicle_id + ", " 
+                 + req.query.user_home_id 
+                 + ", current_date, " 
+                 + req.query.sale_price + ", " 
+                 + req.query.time_charging + ", " 
+                 + req.query.rating + 
+                 " from Transactions";
     
+    con.query(query, (err, rows) => {
+        if (err) {
+            console.log(err);
+            res.status(400).json({"message": "issue inserting transaction"});
+        }
+        res.json({"message": "update successful"});
+    })
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

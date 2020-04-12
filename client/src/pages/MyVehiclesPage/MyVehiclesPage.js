@@ -220,25 +220,29 @@ class EditableVehicle extends Component {
         }
 
         if (this.state.make_names.length == 0) {
-            fetch('/api/vehicle/makes').then(response => {
-                return response.json();
-            }).then(makes_obj => {
-                let makes_list = makes_obj.map(make => make.make_name)
-                this.setState({make_names: makes_list.sort()});
-            })
+            if (this.state.model_year != "") {
+                fetch('/api/vehicle/makes?model_year=' + this.state.model_year).then(response => {
+                    return response.json();
+                }).then(makes_obj => {
+                    let makes_list = makes_obj.map(make => make.make_name)
+                    this.setState({make_names: makes_list.sort()});
+                })
+            }
         }
 
         if (this.state.model_names.length == 0) {
-            fetch('/api/vehicle/models').then(response => {
-                return response.json();
-            }).then(models_obj => {
-                let models_list = models_obj.map(model => model.model_name)
-                this.setState({model_names: models_list.sort()});
-            })
+            if (this.state.model_year != "" && this.state.make_name != "") {
+                fetch('/api/vehicle/models?model_year=' + this.state.model_year + "&make_name=" + this.state.make_name).then(response => {
+                    return response.json();
+                }).then(models_obj => {
+                    let models_list = models_obj.map(model => model.model_name)
+                    this.setState({model_names: models_list.sort()});
+                })
+            }
         }
 
         if (this.state.plugTypes.length == 0) {
-            fetch('/api/vehicle/plugTypes').then(response => {
+            fetch('/api/vehicle/plugTypes?model_year=' + this.state.model_year + "&make_name=" + this.state.make_name + "&model_name=" + this.state.model_name).then(response => {
                 return response.json();
             }).then(plugTypes_obj => {
                 let plugTypes_list = plugTypes_obj.map(pt => pt.plugType);

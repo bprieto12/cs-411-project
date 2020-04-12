@@ -11,7 +11,7 @@ const AvailableHomeBox = props => {
             </div>
             <div className={styles.HomeDetails}>
                 <p className={styles.Address}>{props.home.street_addr + ", " + props.home.zipcode + ", " + props.home.state}</p>
-                <p>Rating: {props.home.rating_stars}</p>
+                <p>Rating: {props.home.avg_rating}</p>
                 <button onClick={() => props.handleStart(props.home)} className={styles.ChargeBtn}>Start Charging</button>
             </div>
         </div>
