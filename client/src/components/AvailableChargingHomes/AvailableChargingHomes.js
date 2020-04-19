@@ -11,7 +11,7 @@ const AvailableHomeBox = props => {
             <div className={styles.HomeDetails}>
                 <p className={styles.Address}>{props.home.street_addr + ", " + props.home.zipcode + ", " + props.home.state}</p>
                 <p>Rating: {props.home.rating_stars}</p>
-                <button className={styles.ChargeBtn}>Start Charging</button>
+                <button onClick={() => props.handleStart(props.home)} className={styles.ChargeBtn}>Start Charging</button>
             </div>
         </div>
     )
@@ -22,7 +22,10 @@ const AvailableChargingHomes = props => {
 
     if (props.available_homes) {
         homes = props.available_homes.map(home => {
-            return <AvailableHomeBox key={home.street_addr} home={home} />;
+            return <AvailableHomeBox 
+                            handleStart={props.checkin}
+                            key={home.street_addr} 
+                            home={home} />;
         })
     }
 

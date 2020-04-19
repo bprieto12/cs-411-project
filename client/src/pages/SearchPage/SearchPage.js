@@ -7,8 +7,12 @@ import Layout from '../../components/Layout/Layout';
 import LoggedInHeader from '../../components/Header/LoggedInHeader';
 import ChargingStationFilters from '../../components/ChargingStationFilters/ChargingStationFilters';
 import ChargingModal from '../../containers/ChargingModal/ChargingModal';
+import TransactionCompleteModal from '../../containers/TransactionCompleteModal/TransactionCompleteModal';
 
 // const host_url = "http://" + window.location.href.split('/')[2];
+let paths = window.location.href.split('/');
+let user_id = paths[paths.length - 1];
+console.log(user_id);
 
 class SearchPage extends Component {
     state = {
@@ -16,14 +20,18 @@ class SearchPage extends Component {
         onlyShowFavorites: false,
         sortBy: null,
         userVehicles: null,
-        showModal: false
+        showChargingModal: false,
+        showTransactionCompleteModal: false,
+        selectedHome: null,
+        time_elapsed: 0,
+        amount_due: 0
     }
 
     componentDidMount() {
         // get user vehicles
         // assign the userVehicleSelected to the default vehicle
         let paths = window.location.href.split('/');
-        const user_id = paths[paths.length - 1];
+        let user_id = paths[paths.length - 1];
         const path = "/api/userCars?user_id=" + user_id;
         fetch(path).then(response => {
             console.log(response);
@@ -90,18 +98,27 @@ class SearchPage extends Component {
         this.setState({sortBy: type});
     }
 
-    handleCheckIn = () => {
-        this.setState({showModal: true});
+    handleCheckIn = (home) => {
+        this.setState({
+            showChargingModal: true, 
+            showTransactionCompleteModal: false,
+            selectedHome: home
+        });
     }
 
-    handleCheckOut = () => {
-        this.setState({showModal: false});
+    handleCheckOut = (final_time_elapsed, final_amount_due) => {
+        this.setState({
+            showChargingModal: false,
+            showTransactionCompleteModal: true,
+            time_elapsed: final_time_elapsed,
+            amount_due: final_amount_due
+        });
     }
     
     render() {
         return (
             <Fragment>
-                <LoggedInHeader />
+                <LoggedInHeader user_id={user_id}/>
                 <Layout>
                     <div className={styles.PageStyles}>
                         <div className={styles.LeftPanel}>
@@ -125,7 +142,14 @@ class SearchPage extends Component {
                             />
                         </div>
                     </div>
-                    <ChargingModal checkout={this.handleCheckOut}/>
+                    <ChargingModal show={this.state.showChargingModal}
+                                   home={this.state.selectedHome} 
+                                   handleCheckOut={this.handleCheckOut}/>
+                    <TransactionCompleteModal 
+                        show={this.state.showTransactionCompleteModal}
+                        home={this.state.selectedHome}
+                        amount_due={this.state.amount_due}
+                        time_elapsed={this.state.time_elapsed} />
                 </Layout>
             </Fragment>
         );

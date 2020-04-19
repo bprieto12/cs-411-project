@@ -1,14 +1,13 @@
 import React from 'react';
 import styles from './UserCarSelector.module.css';
 import fontawesome from '@fortawesome/fontawesome'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/fontawesome-free-solid';
 
 const UserCarSelector = props => {
     let displayed_vehicles = null;
     if (props.userVehicles) {
         displayed_vehicles = props.userVehicles.map(vehicle => {
-            console.log(vehicle);
             return <UserCar 
                 key={vehicle.Lpn} 
                 vehicle={vehicle}

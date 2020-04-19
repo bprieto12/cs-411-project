@@ -9,6 +9,7 @@ import {
 	Link
 } from 'react-router-dom';
 import SearchPage from '../pages/SearchPage/SearchPage';
+import MyVehiclesPage from '../pages/MyVehiclesPage/MyVehiclesPage';
 
 class App extends Component {
 	state = {
@@ -50,8 +51,11 @@ class App extends Component {
 		return (
 		    <div className="App">
 				<Switch>
-					<Route path="/chargestationsearch">
-						<SearchPage user_id={this.state.user_id} />
+					<Route path="/chargestationsearch/:user_id">
+						<SearchPage />
+					</Route>
+					<Route path="/myVehicles/:user_id">
+						<MyVehiclesPage />
 					</Route>
 					<Route path="/">
 						<HomePage />

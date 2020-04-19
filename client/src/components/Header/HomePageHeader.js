@@ -33,14 +33,14 @@ class HomePageHeader extends Component {
 
         return (
             <div className={styles.Header}>
-                <div className={styles.Left}>outlet</div>
+                <div className={styles.Left}><b>outlet</b></div>
                 <div className={styles.Right}>
                     <div className={styles.Nav}>
                         <div className={styles.NavItem}>
                             <input 
                                 className={styles.NavInput}
                                 style={errStyle}
-                                placeholder="email" 
+                                placeholder="Email" 
                                 type="text"
                                 value={this.state.email}
                                 onChange={e => this.setState({email: e.target.value, error: false})}
@@ -50,17 +50,17 @@ class HomePageHeader extends Component {
                             <input 
                                 className={styles.NavInput} 
                                 style={errStyle}
-                                placeholder="password" 
+                                placeholder="Password" 
                                 type="text"
                                 value={this.state.password}
                                 onChange={e => this.setState({password: e.target.value, error: false})}
                             />
                         </div>
-                        <div className={styles.NavItem}>
+                        {/* <div className={styles.NavItem}> */}
                             <button 
                                 className={styles.NavBtn}
                                 onClick={() => this.handleSignInAttempt()}>Log in</button>
-                        </div>
+                        {/* </div> */}
                     </div>
                 </div>
             </div>
