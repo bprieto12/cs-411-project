@@ -83,7 +83,7 @@ class SignUpForm extends Component {
         let lnErrStyle = this.state.last_name_error ? {color: 'red'} : {display: 'none'};
         let emailErrStyle = this.state.email_error ? {color: 'red'} : {display: 'none'};
         let pwdErrStyle = this.state.pwd_error ? {color: 'red'} : {display: 'none'};
-        console.log('new version');
+
         return (
             <Fragment>
                 <p className={styles.NewAccountTitle}>Create New Account</p>

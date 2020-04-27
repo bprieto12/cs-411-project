@@ -19,8 +19,8 @@ class TransactionsPage extends Component {
             fetch('/api/userPurchases/' + user_id).then(response => {
                 return response.json();
             }).then(data => {
-                console.log(data);
-                this.setState({transactions: data});
+                console.log(data[0]);
+                this.setState({transactions: data[0]});
             }).catch(err => {
                 console.log(err);
             })
@@ -49,7 +49,7 @@ class TransactionsPage extends Component {
                                     <td>{transaction.street_addr + " " + transaction.zipcode + " " + transaction.state}</td>
                                     <td>{transaction.time_charging}</td>
                                     <td>{"$" + transaction.sale_price}</td>
-                                    <td>{transaction.sale_date}</td>
+                                    <td>{new Date(transaction.sale_date).toDateString()}</td>
                                 </tr>
                             );
                         })}

@@ -54,18 +54,19 @@ app.get("/api/search/homes", (req, res) => {
             limit = req.query.show;
         }
         // let query = "SELECT *, round((3959 / 1509 * acos(cos(radians(" + req.query.latitude + ")) * cos(radians(geo_latitude)) * cos(radians(geo_longitude) - radians(" + req.query.longitude + ")) + sin(radians(" + req.query.latitude + ")) * sin(radians(geo_latitude )))), 2) AS distance_miles FROM Home ORDER BY distance_miles limit 10";
-        let query = "select *, round(distance_meters / 1509, 3) as distance_miles \
-                    from ( \
-                        SELECT h.*, uh.user_home_id, uh.avg_rating,  \
-                        6371000 * acos(sin(radians(geo_latitude)) * sin(radians(" + req.query.latitude + ")) + cos(radians(geo_latitude)) * cos(radians(" + req.query.latitude + ")) * cos(radians(" + req.query.longitude + " - geo_longitude))) as distance_meters  \
-                        from Home h \
-                            join UserHome uh on (uh.home_id = h.home_id) \
-                    ) as a \
-                    order by distance_miles asc \
-        limit " + limit; 
-        
+        // let query = "select *, round(distance_meters / 1509, 3) as distance_miles \
+        //             from ( \
+        //                 SELECT h.*, uh.user_home_id, uh.avg_rating,  \
+        //                 6371000 * acos(sin(radians(geo_latitude)) * sin(radians(" + req.query.latitude + ")) + cos(radians(geo_latitude)) * cos(radians(" + req.query.latitude + ")) * cos(radians(" + req.query.longitude + " - geo_longitude))) as distance_meters  \
+        //                 from Home h \
+        //                     join UserHome uh on (uh.home_id = h.home_id) \
+        //             ) as a \
+        //             order by distance_miles asc \
+        // limit " + limit; 
+        let query = "call findNearestHomes(" + req.query.latitude + ", " + req.query.longitude + ", " + limit + ")";
+        console.log(query);
         con.query(query, (err, rows) => {
-            res.json(rows);
+            res.json(rows[0]);
         });
     } else {
         res.status(400).json({"message": "a latitude and logitude must be passed to search for homes"});
@@ -208,21 +209,22 @@ app.get('/api/vehicle/plugTypes', (req, res) => {
 })
 
 app.get('/api/userPurchases/:user_id', (req, res) => {
-    let query = "select t.*, \
-    v.model_year, \
-    v.make_name,\
-    v.model_name,\
-    p.name as plugType,\
-    h.street_addr,\
-    h.zipcode,\
-    h.state\
-    from Transactions t \
-        join UserVehicle uv on (uv.user_vehicle_id = t.user_vehicle_id) \
-        join Vehicle v on (v.vehicle_id = uv.vehicle_id) \
-        join PlugType p on (p.plug_type_id = v.plug_type_id) \
-        join UserHome uh on (uh.user_home_id = t.user_home_id) \
-        join Home h on (h.home_id = uh.home_id) \
-    where uv.user_id = " + req.params.user_id;
+    // let query = "select t.*, \
+    // v.model_year, \
+    // v.make_name,\
+    // v.model_name,\
+    // p.name as plugType,\
+    // h.street_addr,\
+    // h.zipcode,\
+    // h.state\
+    // from Transactions t \
+    //     join UserVehicle uv on (uv.user_vehicle_id = t.user_vehicle_id) \
+    //     join Vehicle v on (v.vehicle_id = uv.vehicle_id) \
+    //     join PlugType p on (p.plug_type_id = v.plug_type_id) \
+    //     join UserHome uh on (uh.user_home_id = t.user_home_id) \
+    //     join Home h on (h.home_id = uh.home_id) \
+    // where uv.user_id = " + req.params.user_id;
+    let query = "call getUserTransactions(" + req.params.user_id + ")";
 
     con.query(query, (err, rows) => {
         if (err) {
@@ -355,7 +357,6 @@ app.post('/api/newTransaction', (req, res) => {
                  + req.query.time_charging + ", " 
                  + req.query.rating + 
                  " from Transactions";
-    
     con.query(query, (err, rows) => {
         if (err) {
             console.log(err);
