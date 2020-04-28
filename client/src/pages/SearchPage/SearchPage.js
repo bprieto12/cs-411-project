@@ -172,10 +172,10 @@ class SearchPage extends Component {
                         <div className={styles.RightPanel}>
                             <p className={styles.BigPrompt}>Enter your location</p>
                             <SearchBar onsearch={this.onSearch} />
-                            <ChargingStationFilters 
+                            {/* <ChargingStationFilters 
                                 onUseFavorites={this.handleFavoritesClick} 
                                 onUpdateSort={this.handleSortSelection}
-                            />
+                            /> */}
                             {
                                 this.state.searching ? <Spinner /> :
                                 <AvailableChargingHomes
