@@ -103,7 +103,8 @@ class MyVehiclesPage extends Component {
         fetch(vehicle_id_query).then(response => {
             return response.json();
         }).then(vid => {
-            
+            console.log('vehicle id');
+            console.log(vid);
             if (vid.length > 0) {
                 // post new vehicle
                 let paths = window.location.href.split('/');
@@ -120,6 +121,8 @@ class MyVehiclesPage extends Component {
                 fetch(register_vehicle_query, {method: "POST"}).then(response => {
                     return response.json();
                 }).then(data => {
+                    console.log("vehicle reg");
+                    console.log(data);
                     let vehicles_copy = [...this.state.vehicles];
                     vehicles_copy.push(data[0]);
                     
