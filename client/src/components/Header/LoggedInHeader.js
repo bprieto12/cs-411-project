@@ -17,8 +17,11 @@ const LoggedInHeader = (props) => {
                     <Link to={"/myVehicles/" + user_id} className={styles.link}>
                         <div>My Cars</div>
                     </Link>
-                    <Link to={"chargestationsearch/" + user_id} className={styles.link}>
+                    {/* <Link to={"chargestationsearch/" + user_id} className={styles.link}>
                         <div>My Homes</div>
+                    </Link> */}
+                    <Link to={"/transactions/" + user_id} className={styles.link}>
+                        <div>Transactions</div>
                     </Link>
                     {/* <div className={[styles.NavItem, styles.Icon].join(' ')}>{props.userFirstName[0] + props.userLastName[0]}</div> */}
                 </div>

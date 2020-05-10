@@ -53,16 +53,20 @@ app.get("/api/search/homes", (req, res) => {
         if (req.query.show) {
             limit = req.query.show;
         }
-        let query = "select *, round(distance_meters / 1509, 3) as distance_miles \
-                    from ( \
-                        SELECT *,  \
-                        6371000 * acos(sin(radians(geo_latitude)) * sin(radians(" + req.query.latitude + ")) + cos(radians(geo_latitude)) * cos(radians(" + req.query.latitude + ")) * cos(radians(" + req.query.longitude + " - geo_longitude))) as distance_meters  \
-                        from Home \
-                    ) as a \
-                    order by distance_miles asc \
-        limit " + limit; 
+        // let query = "SELECT *, round((3959 / 1509 * acos(cos(radians(" + req.query.latitude + ")) * cos(radians(geo_latitude)) * cos(radians(geo_longitude) - radians(" + req.query.longitude + ")) + sin(radians(" + req.query.latitude + ")) * sin(radians(geo_latitude )))), 2) AS distance_miles FROM Home ORDER BY distance_miles limit 10";
+        // let query = "select *, round(distance_meters / 1509, 3) as distance_miles \
+        //             from ( \
+        //                 SELECT h.*, uh.user_home_id, uh.avg_rating,  \
+        //                 6371000 * acos(sin(radians(geo_latitude)) * sin(radians(" + req.query.latitude + ")) + cos(radians(geo_latitude)) * cos(radians(" + req.query.latitude + ")) * cos(radians(" + req.query.longitude + " - geo_longitude))) as distance_meters  \
+        //                 from Home h \
+        //                     join UserHome uh on (uh.home_id = h.home_id) \
+        //             ) as a \
+        //             order by distance_miles asc \
+        // limit " + limit; 
+        let query = "call findNearestHomes(" + req.query.latitude + ", " + req.query.longitude + ", " + limit + ")";
+        console.log(query);
         con.query(query, (err, rows) => {
-            res.json(rows);
+            res.json(rows[0]);
         });
     } else {
         res.status(400).json({"message": "a latitude and logitude must be passed to search for homes"});
@@ -128,90 +132,148 @@ app.get('/api/vehicle/years', (req, res) => {
 
 app.get('/api/vehicle/makes', (req, res) => { 
     // require year
-    // if (req.query.model_year) {
-    //     const query_str = 'SELECT distinct make_name FROM Vehicle where model_year=' + req.query.model_year;
-    //     con.query(query_str, (err,rows) => {
-    //         if(err) {
-    //             console.log(err)
-    //             res.status(400).json({"message": "sample user query issue"});
-    //         };
+    if (req.query.model_year) {
+        let query_str = 'SELECT distinct make_name FROM Vehicle where model_year=' + req.query.model_year;
+        con.query(query_str, (err,rows) => {
+            if(err) {
+                console.log(err)
+                res.status(400).json({"message": "sample user query issue"});
+            };
           
-    //         res.json(rows);
-    //     });
-    // } else {
-    //     res.status(400).json({'message': 'A year must be provided in the parameters'});
-    // }
-    const query_str = 'SELECT distinct make_name FROM Vehicle';
-    con.query(query_str, (err,rows) => {
-        if(err) {
-            console.log(err)
-            res.status(400).json({"message": "sample user query issue"});
-        };
-        
-        res.json(rows);
-    });
-    
+            res.json(rows);
+        });
+    } else {
+        let query_str = 'SELECT distinct make_name FROM Vehicle';
+        con.query(query_str, (err,rows) => {
+            if(err) {
+                console.log(err)
+                res.status(400).json({"message": "sample user query issue"});
+            };
+            
+            res.json(rows);
+        });
+    }
 })
 
 app.get('/api/vehicle/models', (req, res) => {
     // require year and make
-    // if (req.query.model_year && req.query.make_name) {
-    //     const models = 'SELECT distinct model_name FROM Vehicle where model_year = ' + req.query.model_year + " and make_name = '" + req.query.make_name + "'";
+    if (req.query.model_year && req.query.make_name) {
+        let models = 'SELECT distinct model_name FROM Vehicle where model_year = ' + req.query.model_year + " and make_name = '" + req.query.make_name + "'";
         
-    //     con.query(models, (err,rows) => {
-    //         if(err) {
-    //             console.log(err)
-    //             res.status(400).json({"message": "sample user query issue"});
-    //         };
+        con.query(models, (err,rows) => {
+            if(err) {
+                console.log(err)
+                res.status(400).json({"message": "sample user query issue"});
+            };
           
-    //         res.json(rows);
-    //     });
-    // } else {
-    //     res.status(400).json({'message': 'A model year and make name must be provided in the parameters'});
-    // }
-    const models = 'SELECT distinct model_name FROM Vehicle';
+            res.json(rows);
+        });
+    } else {
+        let models = 'SELECT distinct model_name FROM Vehicle';
         
-    con.query(models, (err,rows) => {
-        if(err) {
-            console.log(err)
-            res.status(400).json({"message": "sample user query issue"});
-        };
-        
-        res.json(rows);
-    });
+        con.query(models, (err,rows) => {
+            if(err) {
+                console.log(err)
+                res.status(400).json({"message": "sample user query issue"});
+            };
+            
+            res.json(rows);
+        });
+    }
+    
 })
 
 app.get('/api/vehicle/plugTypes', (req, res) => {
+    if (req.query.model_year && req.query.make_name && req.query.model_name) {
+        let query = "select distinct name as plugType \
+        from Vehicle v join PlugType p on p.plug_type_id = v.plug_type_id \
+        where model_year = " + req.query.model_year + " and make_name = '" + req.query.make_name + "' and model_name='" + req.query.model_name + "'";
+        
+        con.query(query, (err,rows) => {
+            if(err) {
+                console.log(err)
+                res.status(400).json({"message": "plug types query had an issue"});
+            };
+            res.json(rows);
+        });
+    } else {
+        let query = 'select distinct name as plugType from PlugType'        
+        con.query(query, (err,rows) => {
+            if(err) {
+                console.log(err)
+                res.status(400).json({"message": "plug types query had an issue"});
+            };
+            res.json(rows);
+        });
+    }
+})
 
-    const query = 'SELECT name as plugType FROM PlugType';
-    
-    con.query(query, (err,rows) => {
-        if(err) {
-            console.log(err)
-            res.status(400).json({"message": "plug types query had an issue"});
-        };
+
+app.get('/api/userPurchases/:user_id', (req, res) => {
+    // select t.*, 
+    // v.model_year, 
+    // v.make_name,
+    // v.model_name,
+    // p.name as plugType,
+    // h.street_addr,
+    // h.zipcode,
+    // h.state
+    // from Transactions t 
+    //     join UserVehicle uv on (uv.user_vehicle_id = t.user_vehicle_id) 
+    //      join Vehicle v on (v.vehicle_id = uv.vehicle_id) 
+    //      join PlugType p on (p.plug_type_id = v.plug_type_id) 
+    //      join UserHome uh on (uh.user_home_id = t.user_home_id) 
+    //      join Home h on (h.home_id = uh.home_id) 
+    //  where uv.user_id =	userId;
+    let query = "call getUserTransactions(" + req.params.user_id + ")";
+
+    con.query(query, (err, rows) => {
+        if (err) {
+            res.status(400).json({"message": "couldn't get transactions for user id: " + req.params.user_id});
+        }
         res.json(rows);
-    });
+    })
+});
+
+app.get('/api/userSales/:user_id', (req, res) => {
+    let query = "select t.*, \
+    v.model_year, \
+    v.make_name,\
+    v.model_name,\
+    p.name as plugType,\
+    h.street_addr,\
+    h.zipcode,\
+    h.state\
+    from Transactions t \
+        join UserVehicle uv on (uv.user_vehicle_id = t.user_vehicle_id) \
+        join Vehicle v on (v.vehicle_id = uv.vehicle_id) \
+        join PlugType p on (p.plug_type_id = v.plug_type_id) \
+        join UserHome uh on (uh.user_home_id = t.user_home_id) \
+        join Home h on (h.home_id = uh.home_id) \
+    where uh.user_id = " + req.params.user_id;
+
+    con.query(query, (err, rows) => {
+        if (err) {
+            res.status(400).json({"message": "couldn't get transactions for user id: " + req.params.user_id});
+        }
+        res.json(rows);
+    })
 })
 
 app.post('/api/register/vehicle', (req, res) => {
     if (req.query.user_id && req.query.vehicle_id && req.query.Lpn && req.query.isDefault) {
         let new_user_vehicle_id_query = 'select max(user_vehicle_id) + 1 as user_vehicle_id from UserVehicle';
-        console.log(new_user_vehicle_id_query);
+        
         con.query(new_user_vehicle_id_query, (err, rows) => {
             if (err) {
                 res.status(400).json({"message": "issue getting new id"});
             }
             let new_user_vehicle_id = rows[0].user_vehicle_id;
-            console.log(new_user_vehicle_id);
-            let submit_new_vehicle_query = 'insert into UserVehicle values (' +
-                    new_user_vehicle_id + ", " +
-                    req.query.user_id + ", " +
-                    req.query.vehicle_id + ", '" +
-                    req.query.Lpn + "', " + 
-                    req.query.isDefault + ")";
-            console.log(submit_new_vehicle_query);
-            con.query(submit_new_vehicle_query, (err, rows) => {
+            
+            let submit_new_vehicle_query = "insert into UserVehicle values (?,?,?,?,?);";
+            let prepared_statement = mysql.format(submit_new_vehicle_query, [new_user_vehicle_id, req.query.user_id,req.query.vehicle_id,req.query.Lpn, req.query.isDefault]);
+            console.log(prepared_statement);
+            con.query(prepared_statement, (err, rows) => {
                 if (err) {
                     res.json({"message": "issue posting new vehicle"});
                 }
@@ -223,6 +285,8 @@ app.post('/api/register/vehicle', (req, res) => {
                 where uv.user_vehicle_id = " + new_user_vehicle_id;
                 console.log(vehicle_info_query);
                 con.query(vehicle_info_query, (err, rows) => {
+                    console.log(err);
+                    console.log(rows);
                     if (err) {
                         res.json({"message": "issue getting user vehicle"});
                     }
@@ -236,7 +300,7 @@ app.post('/api/register/vehicle', (req, res) => {
 
 app.post('/api/remove/user_vehicle/:user_vehicle_id', (req, res) => {
     const query = "delete from UserVehicle where user_vehicle_id=" + req.params.user_vehicle_id;
-    console.log(query)
+    
     con.query(query, (err, rows) => {
         if (err) {
             res.status(400).json({"message": "error deleting vehicle"});
@@ -270,7 +334,7 @@ app.post('/api/register/newUser', (req, res) => {
 
     users.forEach(user => {
         max_user_id = user.user_id;
-        console.log(user.email);
+      
         if (req.query.email === user.email) {
             user_exists = true;
         }
@@ -282,6 +346,24 @@ app.post('/api/register/newUser', (req, res) => {
         res.json({"user_id": max_user_id + 1});
     }
 });
+
+app.post('/api/newTransaction', (req, res) => {
+    let query = "insert into Transactions \
+                 select max(trans_id) + 1," + req.query.user_vehicle_id + ", " 
+                 + req.query.user_home_id 
+                 + ", current_date, " 
+                 + req.query.sale_price + ", " 
+                 + req.query.time_charging + ", " 
+                 + req.query.rating + 
+                 " from Transactions";
+    con.query(query, (err, rows) => {
+        if (err) {
+            console.log(err);
+            res.status(400).json({"message": "issue inserting transaction"});
+        }
+        res.json({"message": "update successful"});
+    })
+})
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
