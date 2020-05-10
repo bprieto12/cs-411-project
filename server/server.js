@@ -208,22 +208,23 @@ app.get('/api/vehicle/plugTypes', (req, res) => {
     }
 })
 
+
 app.get('/api/userPurchases/:user_id', (req, res) => {
-    // let query = "select t.*, \
-    // v.model_year, \
-    // v.make_name,\
-    // v.model_name,\
-    // p.name as plugType,\
-    // h.street_addr,\
-    // h.zipcode,\
-    // h.state\
-    // from Transactions t \
-    //     join UserVehicle uv on (uv.user_vehicle_id = t.user_vehicle_id) \
-    //     join Vehicle v on (v.vehicle_id = uv.vehicle_id) \
-    //     join PlugType p on (p.plug_type_id = v.plug_type_id) \
-    //     join UserHome uh on (uh.user_home_id = t.user_home_id) \
-    //     join Home h on (h.home_id = uh.home_id) \
-    // where uv.user_id = " + req.params.user_id;
+    // select t.*, 
+    // v.model_year, 
+    // v.make_name,
+    // v.model_name,
+    // p.name as plugType,
+    // h.street_addr,
+    // h.zipcode,
+    // h.state
+    // from Transactions t 
+    //     join UserVehicle uv on (uv.user_vehicle_id = t.user_vehicle_id) 
+    //      join Vehicle v on (v.vehicle_id = uv.vehicle_id) 
+    //      join PlugType p on (p.plug_type_id = v.plug_type_id) 
+    //      join UserHome uh on (uh.user_home_id = t.user_home_id) 
+    //      join Home h on (h.home_id = uh.home_id) 
+    //  where uv.user_id =	userId;
     let query = "call getUserTransactions(" + req.params.user_id + ")";
 
     con.query(query, (err, rows) => {
@@ -269,14 +270,10 @@ app.post('/api/register/vehicle', (req, res) => {
             }
             let new_user_vehicle_id = rows[0].user_vehicle_id;
             
-            let submit_new_vehicle_query = 'insert into UserVehicle values (' +
-                    new_user_vehicle_id + ", " +
-                    req.query.user_id + ", " +
-                    req.query.vehicle_id + ", '" +
-                    req.query.Lpn + "', " + 
-                    req.query.isDefault + ")";
-            
-            con.query(submit_new_vehicle_query, (err, rows) => {
+            let submit_new_vehicle_query = "insert into UserVehicle values (?,?,?,?,?);";
+            let prepared_statement = mysql.format(submit_new_vehicle_query, [new_user_vehicle_id, req.query.user_id,req.query.vehicle_id,req.query.Lpn, req.query.isDefault]);
+            console.log(prepared_statement);
+            con.query(prepared_statement, (err, rows) => {
                 if (err) {
                     res.json({"message": "issue posting new vehicle"});
                 }
@@ -288,6 +285,8 @@ app.post('/api/register/vehicle', (req, res) => {
                 where uv.user_vehicle_id = " + new_user_vehicle_id;
                 console.log(vehicle_info_query);
                 con.query(vehicle_info_query, (err, rows) => {
+                    console.log(err);
+                    console.log(rows);
                     if (err) {
                         res.json({"message": "issue getting user vehicle"});
                     }
