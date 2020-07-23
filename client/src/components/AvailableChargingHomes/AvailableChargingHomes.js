@@ -16,10 +16,8 @@ const AvailableHomeBox = props => {
         stars = [1, 2, 3, 4, 5].map(starNum => {
             if (props.home.avg_rating >= starNum) {
                 return <FontAwesomeIcon style={{color: "#E9B949", display: 'inline-block'}} icon={solidStar} />
-                      
             } else {
                 return <FontAwesomeIcon style={{color: "#E9B949", display: 'inline-block'}} icon={regularStar} />
-                    
             }
         })
     }

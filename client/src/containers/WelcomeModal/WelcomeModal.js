@@ -27,7 +27,7 @@ class WelcomeModal extends Component {
         return (
             <Modal onClose={this.props.onClose}
                    show={this.props.show}>
-                <div className={styles.Container}>
+                <div className={styles.Container} data-testid="welcome-modal">
                     <h1>Welcome!</h1>
                     <p className={styles.Message}>A couple more steps and you're all set</p>
                     <p className={styles.Message}>First, let's register your car.<br />

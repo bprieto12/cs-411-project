@@ -11,8 +11,9 @@
 
 .Left {
   float: left;
-  width: 65%;
-  color: hsla(209, 15%, 28%);
+  width: 50%;
+  /* color: hsla(209, 15%, 28%); */
+  color: #014D40;
   padding-top: 72px;
 }
 
@@ -30,8 +31,9 @@
 
 .Right {
   float: left;
-  width: 35%;
+  width: 50%;
   padding-left: 48px;
+  color: hsla(209, 15%, 28%);
   /* font-family: 'Montserrat', sans-serif; */
   padding-top: 72px;
 }
@@ -42,48 +44,21 @@
   display: table;
 }
 
-.FormInput {
-    font-size: 16px;
-    padding: 8px 12px;
-    margin-top: 18px;
-    border: 1px solid hsla(208, 12%, 58%);
-    border-radius: 3px;
-    width: 100%;
-    box-shadow: inset 0 2px 2px hsla(0, 0%, 0%, 0.1);
-}
-
-
-.FirstName {
-    width: 40%;
-    display: inline-block;
-}
-
-.LastName {
-    width: 60%;
-    padding-left: 16px;
-    display: inline-block;
-}
-
-.SignupBtn {
-    width: 100%;
-    margin-top: 18px;
-    border-radius: 3px;
-    /* background-color: hsl(170, 100%, 40%); */
-    background-color: hsl(205.6,100%,41.4%);
-    color: white;
-    font-size: 18px;
-    padding: 12px;
-    border: none;
-}
-
-.SignupBtn:hover {
-  /* background-color: hsl(170, 100%, 45%); */
-  background-color: hsl(222.9,77%,62.5%);
-}
-
 .NewAccountTitle {
     font-size: 24px;
     color: hsla(209, 15%, 28%);
     margin-top: 0;
     margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .Left {
+    width: 100%;
+  }
+
+  .Right {
+    padding-left: 0px;
+    width: 100%;
+    margin-top: 24px;
+  }
 }
