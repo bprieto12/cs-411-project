@@ -1,16 +1,42 @@
 const express = require('express');
-const axios = require('axios');
-const app = express()
+//const axios = require('axios');
+const app = express();
 const port = 6000;
 const mysql = require('mysql');
+const helmet = require('helmet');
+//let session = require('express-session');
+let { connectionProvider } = require("./data_access/connectionProvider.js");
+let serverSettings = require("./settings/serverSettings.js");
+let { sessionsManagementConfig } = require("./configurations/sessionsManagementConfig.js");
 
-let con = mysql.createConnection({
-    host: 'localhost',
-    port: 3306,
-    user: process.env.DB_USER_NAME,
-    password: process.env.DB_USER_PWD,
-    database: 'outletprototype_website'
-});
+sessionsManagementConfig(app);
+
+let con = connectionProvider(serverSettings.serverUrl, serverSettings.database);
+// console.log(`in server ${process.env.DB_USER_NAME} ${process.env.DB_USER_PWD}`);
+app.use(helmet.noCache());
+// const ttl = 24 * 60 * 60 * 1000;
+// app.use(session({
+//     secret: 'secret',
+//     key: 'express.sessionId',
+//     // store: sessionStore,
+//     saveUninitialized: true,
+//     cookie: {
+//         path: "/",
+//         httpOnly: true,
+//         secure: true,
+//         maxAge: ttl
+//     },
+//     name: "id"
+// }))
+
+// let con = mysql.createConnection({
+//     host: 'localhost',
+//     port: 3306,
+//     user: process.env.DB_USER_NAME,
+//     password: process.env.DB_USER_PWD,
+//     database: 'outletprototype_website'
+// });
+
 
 /*
 let insertVehicle = "INSERT INTO UserVehicle (user_vehicle_id, user_id, Vehicle_id, Lpn, default_vehicle) VALUES ('"   \
@@ -32,37 +58,59 @@ con.connect((err) => {
     console.log('Connection established');
 });
 
+const sessionLogin = (req, cb) => {
+    req.session.regenerate((err) => {
+        if (err) {
+            cb(err);
+        }
+    });
+    req.session.userInfo = user;
+    cb();
+}
+
+app.get("/api/testCookie", (req, res) => {
+    console.log(`test cookie: ${req.sessionID}`);
+    res.send(req.sessionID);
+})
 
 app.get('/api/userLogin/', (req, res) => {
     const email = req.query.email;
     const pwd = req.query.pwd;
-
+    // console.log(`session id in userLogin: ${req.sessionID}`);
+    
     let query = "select * from Users where email_addr='" + email + "' and pwd='" + pwd + "'";
-    con.query(query, (err, rows) => {
+    con.query(query, (err, userInfo) => {
         if (err) {
-            res.status(400).json({"message": "User Not Found"});
+            res.status(400).send("User Not Found");
         } else {
-            res.json(rows);
+            req.session.regenerate(function(err) {
+                console.log('error');
+            });
+            req.session.userInfo = userInfo;
+            res.status(200).json(userInfo);
         }
-    })
+    });
 });
 
 app.get("/api/search/homes", (req, res) => {
+    // console.log(`session id in home search: ${req.sessionID}`);
     if (req.query.latitude && req.query.longitude) {
         let limit = 10;
         if (req.query.show) {
             limit = req.query.show;
         }
-        // let query = "SELECT *, round((3959 / 1509 * acos(cos(radians(" + req.query.latitude + ")) * cos(radians(geo_latitude)) * cos(radians(geo_longitude) - radians(" + req.query.longitude + ")) + sin(radians(" + req.query.latitude + ")) * sin(radians(geo_latitude )))), 2) AS distance_miles FROM Home ORDER BY distance_miles limit 10";
-        // let query = "select *, round(distance_meters / 1509, 3) as distance_miles \
-        //             from ( \
-        //                 SELECT h.*, uh.user_home_id, uh.avg_rating,  \
-        //                 6371000 * acos(sin(radians(geo_latitude)) * sin(radians(" + req.query.latitude + ")) + cos(radians(geo_latitude)) * cos(radians(" + req.query.latitude + ")) * cos(radians(" + req.query.longitude + " - geo_longitude))) as distance_meters  \
-        //                 from Home h \
-        //                     join UserHome uh on (uh.home_id = h.home_id) \
-        //             ) as a \
-        //             order by distance_miles asc \
-        // limit " + limit; 
+        // select a.*, round(distance_meters / 1509, 3) as distance_miles, case when h.user_home_id is null then 0 else 1 end as is_hotspot, hs.avg_rating, hs.num_reviews 
+        //             from ( 
+        //                 SELECT h.*, uh.user_home_id, uh.avg_rating,  
+        //                 6371000 * acos(sin(radians(geo_latitude)) * sin(radians(userLatitude)) + cos(radians(geo_latitude)) * cos(radians(userLatitude)) * cos(radians(userLongitude - geo_longitude))) as distance_meters  
+        //                 from Home h 
+        //                     join UserHome uh on (uh.home_id = h.home_id)
+        //             ) as a
+        //             left join hotspots h on (h.user_home_id = a.user_home_id)
+        //             left join home_review_stats hs on (hs.user_home_id = a.user_home_id)
+        //             order by distance_miles asc
+        // limit userLimit;
+
         let query = "call findNearestHomes(" + req.query.latitude + ", " + req.query.longitude + ", " + limit + ")";
         console.log(query);
         con.query(query, (err, rows) => {
@@ -331,7 +379,8 @@ app.post('/api/update/user_vehicle/:user_vehicle_id', (req, res) => {
 app.post('/api/register/newUser', (req, res) => {
     let user_exists = false;
     let max_user_id = 0;
-
+    
+    // insert new user into the database
     users.forEach(user => {
         max_user_id = user.user_id;
       
